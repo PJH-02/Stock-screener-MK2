@@ -1,0 +1,6 @@
+pykrx
+opendartreader
+pandas
+numpy
+python-dotenv
+lxml
