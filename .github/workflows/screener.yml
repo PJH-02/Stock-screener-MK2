@@ -27,6 +27,7 @@ jobs:
     - name: Run screener
       env:
         DART_API_KEY: ${{ secrets.DART_API_KEY }}
+        PYTHONPATH: ./src
       run: |
         python src/main.py
         
@@ -42,3 +43,6 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.ref }}
+    
+    # This will trigger the deploy-pages workflow automatically
+    # because we pushed changes to results/screener_results.json
