@@ -31,17 +31,21 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        # v3 -> v4
+        uses: actions/checkout@v4 
       
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        # v3 -> v4
+        uses: actions/configure-pages@v4 
       
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        # v2 -> v3 (가장 핵심적인 변경)
+        uses: actions/upload-pages-artifact@v3 
         with:
           # Upload public directory
           path: './public'
       
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        # v2 -> v4
+        uses: actions/deploy-pages@v4
