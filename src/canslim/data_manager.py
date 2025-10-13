@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from pykrx import stock
 from datetime import datetime, timedelta
-from OpenDartReader import OpenDartReader
+from opendartreader import OpenDartReader
 from ..utils import setup_logger, rate_limited
 
 logger = setup_logger('data_manager')
