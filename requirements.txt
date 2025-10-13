@@ -1,6 +1,6 @@
-pykrx
-opendartreader
-pandas
-numpy
-python-dotenv
-lxml
+pykrx==1.0.46
+pandas==2.1.4
+numpy==1.26.2
+OpenDartReader==0.2.0
+requests==2.31.0
+python-dateutil==2.8.2

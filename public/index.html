@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CANSLIM + Turtle Trading Screener</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐢 CANSLIM + Turtle Trading Screener</h1>
+            <p class="subtitle">Korean Stock Market (KOSPI 200 + KOSDAQ 150)</p>
+            <div id="lastUpdated" class="last-updated">Loading...</div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-button active" data-tab="cansl">
+                CANSL Pass (<span id="canslCount">0</span>)
+            </button>
+            <button class="tab-button" data-tab="buy">
+                Buy Signals (<span id="buyCount">0</span>)
+            </button>
+            <button class="tab-button" data-tab="exit">
+                Exit Signals (<span id="exitCount">0</span>)
+            </button>
+        </nav>
+
+        <main>
+            <!-- CANSL Pass Tab -->
+            <div id="canslTab" class="tab-content active">
+                <div class="info-box">
+                    <h3>✅ CANSL Pass Criteria</h3>
+                    <p>Stocks that meet ALL of the following conditions:</p>
+                    <ul>
+                        <li><strong>C</strong> - Current Earnings: YoY EPS growth ≥ 20% (last 2 quarters)</li>
+                        <li><strong>A</strong> - Annual Earnings: 3-year EPS CAGR ≥ 20% AND ROE ≥ 15%</li>
+                        <li><strong>N</strong> - Newness: Price ≥ 85% of 52-week high</li>
+                        <li><strong>S</strong> - Supply/Demand: 5-day volume >2x or <0.3x of 50-day avg</li>
+                        <li><strong>L</strong> - Leadership: Top 80th percentile RS in sector (if available)</li>
+                    </ul>
+                </div>
+                <div class="table-container">
+                    <table id="canslTable">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Company Name</th>
+                                <th>Close Price</th>
+                                <th>CANSLIM Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="canslTableBody">
+                            <tr>
+                                <td colspan="4" class="loading">Loading data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Buy Signals Tab -->
+            <div id="buyTab" class="tab-content">
+                <div class="info-box signal-buy">
+                    <h3>📈 Turtle Trading Buy Signals</h3>
+                    <ul>
+                        <li><strong>S1_Buy</strong>: Price breaks above 20-day high (Short-term entry)</li>
+                        <li><strong>S2_Buy</strong>: Price breaks above 55-day high (Long-term entry)</li>
+                    </ul>
+                </div>
+                <div class="table-container">
+                    <table id="buyTable">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Company Name</th>
+                                <th>Close Price</th>
+                                <th>Signal</th>
+                                <th>CANSLIM Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="buyTableBody">
+                            <tr>
+                                <td colspan="5" class="loading">Loading data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Exit Signals Tab -->
+            <div id="exitTab" class="tab-content">
+                <div class="info-box signal-exit">
+                    <h3>📉 Turtle Trading Exit Signals</h3>
+                    <ul>
+                        <li><strong>S1_Exit</strong>: Price breaks below 10-day low (Short-term exit)</li>
+                        <li><strong>S2_Exit</strong>: Price breaks below 20-day low (Long-term exit)</li>
+                    </ul>
+                </div>
+                <div class="table-container">
+                    <table id="exitTable">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Company Name</th>
+                                <th>Close Price</th>
+                                <th>Signal</th>
+                                <th>CANSLIM Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="exitTableBody">
+                            <tr>
+                                <td colspan="5" class="loading">Loading data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>⚠️ This is for educational and research purposes only. Not investment advice.</p>
+            <p>Data updates daily at 18:30 KST via GitHub Actions</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
