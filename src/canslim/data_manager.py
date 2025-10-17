@@ -3,7 +3,12 @@ import pandas as pd
 from pykrx import stock
 from datetime import datetime, timedelta
 import OpenDartReader
-from ..utils import setup_logger, rate_limited
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils import setup_logger, rate_limited
 
 logger = setup_logger('data_manager')
 
@@ -99,8 +104,6 @@ class DataManager:
             for year in range(current_year - 3, current_year + 1):
                 try:
                     # Use OpenDartReader module function directly
-                    # Note: You may need to adjust this based on actual OpenDartReader API
-                    # The module might require API key to be passed differently
                     fs = OpenDartReader.document(corp_code, year)
                     if fs is not None and not (isinstance(fs, pd.DataFrame) and fs.empty):
                         fs_data.append(fs)
