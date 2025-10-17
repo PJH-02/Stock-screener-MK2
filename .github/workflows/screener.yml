@@ -26,11 +26,7 @@ jobs:
         
     - name: Verify opendartreader installation
       run: |
-        python -c "
-        import OpenDartReader
-        print('✓ OpenDartReader imported successfully')
-        print('Available:', [x for x in dir(OpenDartReader) if not x.startswith('_')][:10])
-        "
+        python -c "import OpenDartReader; print('✓ OpenDartReader imported successfully')"
         
     - name: Run screener
       run: |
