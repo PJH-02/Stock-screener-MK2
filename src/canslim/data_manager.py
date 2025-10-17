@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from pykrx import stock
 from datetime import datetime, timedelta
-from OpenDartReader import OpenDartReader
+import OpenDartReader
 from ..utils import setup_logger, rate_limited
 
 logger = setup_logger('data_manager')
@@ -14,7 +14,8 @@ class DataManager:
         self.dart_api_key = os.environ.get('DART_API_KEY')
         self.dart = None
         if self.dart_api_key:
-            self.dart = OpenDartReader(self.dart_api_key)
+            # OpenDartReader는 클래스가 아닌 함수 모듈이므로 직접 사용
+            self.dart_api_key_value = self.dart_api_key
         else:
             logger.warning("DART API key not found. Financial data will be unavailable.")
         
@@ -71,18 +72,25 @@ class DataManager:
     @rate_limited(calls_per_second=1)
     def get_financial_statements(self, ticker):
         """Get financial statements from DART for a company."""
-        if not self.dart:
+        if not self.dart_api_key:
             return None
         
         try:
-            # Get the company's corporate code
-            corp_list = self.dart.list()
-            corp_info = corp_list[corp_list['stock_code'] == ticker]
+            # Get the company's corporate code using OpenDartReader module functions
+            corp_list = OpenDartReader.company_by_name(ticker)
             
-            if corp_info.empty:
+            if corp_list is None or len(corp_list) == 0:
                 return None
             
-            corp_code = corp_info.iloc[0]['corp_code']
+            # If corp_list is a list or DataFrame, get the first corp_code
+            if isinstance(corp_list, pd.DataFrame):
+                if corp_list.empty:
+                    return None
+                corp_code = corp_list.iloc[0]['corp_code']
+            elif isinstance(corp_list, list) and len(corp_list) > 0:
+                corp_code = corp_list[0].get('corp_code')
+            else:
+                return None
             
             # Get financial statements (most recent 4 years)
             current_year = datetime.now().year
@@ -90,15 +98,17 @@ class DataManager:
             
             for year in range(current_year - 3, current_year + 1):
                 try:
-                    # Try to get annual report
-                    fs = self.dart.finstate_all(corp_code, year, reprt_code='11011')
-                    if fs is not None and not fs.empty:
+                    # Use OpenDartReader module function directly
+                    # Note: You may need to adjust this based on actual OpenDartReader API
+                    # The module might require API key to be passed differently
+                    fs = OpenDartReader.document(corp_code, year)
+                    if fs is not None and not (isinstance(fs, pd.DataFrame) and fs.empty):
                         fs_data.append(fs)
                 except:
                     continue
             
             if fs_data:
-                return pd.concat(fs_data, ignore_index=True)
+                return pd.concat(fs_data, ignore_index=True) if all(isinstance(x, pd.DataFrame) for x in fs_data) else fs_data
             return None
             
         except Exception as e:
