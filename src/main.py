@@ -8,6 +8,11 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
+import sys
+
+# Add src directory to Python path
+src_dir = Path(__file__).parent
+sys.path.insert(0, str(src_dir))
 
 from canslim import (
     DataManager,
