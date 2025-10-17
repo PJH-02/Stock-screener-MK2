@@ -32,7 +32,7 @@ jobs:
     
     - name: Verify opendartreader installation
       run: |
-        python -c "import opendartreader; print(f'opendartreader version: {opendartreader.__version__}')"
+        python -c "import OpenDartReader; print(f'opendartreader version: {opendartreader.__version__}')"
         
     - name: Run screener
       run: |
