@@ -30,11 +30,12 @@ jobs:
         
     - name: Run screener
       run: |
-        python src/main.py
+        cd src
+        python main.py
       env:
         DART_API_KEY: ${{ secrets.DART_API_KEY }}
-        PYTHONPATH: ${{ github.workspace }}
-        
+        PYTHONPATH: ${{ github.workspace }}/src
+            
     - name: Commit results
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
