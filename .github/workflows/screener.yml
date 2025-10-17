@@ -21,10 +21,15 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        echo "Installed packages:"
-        pip list | grep -E "(opendartreader|pykrx|pandas)"
-        
+        echo "Installing from requirements.txt..."
+        pip install -r requirements.txt -v
+        echo ""
+        echo "=== Installation complete. Installed packages: ==="
+        pip list
+        echo ""
+        echo "=== Checking opendartreader specifically: ==="
+        pip show opendartreader || pip show OpenDartReader || echo "opendartreader not found"
+    
     - name: Verify opendartreader installation
       run: |
         python -c "import opendartreader; print(f'opendartreader version: {opendartreader.__version__}')"
