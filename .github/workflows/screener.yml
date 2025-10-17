@@ -27,11 +27,11 @@ jobs:
         pip install -r requirements.txt
         
     - name: Run screener
+      run: |
+        cd src && python main.py
       env:
         DART_API_KEY: ${{ secrets.DART_API_KEY }}
-        PYTHONPATH: ./src
-      run: |
-        python src/main.py
+        PYTHONPATH: .
         
     - name: Commit results
       run: |
