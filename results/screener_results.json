@@ -1,46 +1,5 @@
 {
-  "last_updated": "2025-10-10 18:30:00 KST",
-  "cansl_passed": [
-    {
-      "Ticker": "005930",
-      "CompanyName": "삼성전자",
-      "ClosePrice": 70000,
-      "CANSLIM_Score": 5
-    },
-    {
-      "Ticker": "000660",
-      "CompanyName": "SK하이닉스",
-      "ClosePrice": 145000,
-      "CANSLIM_Score": 5
-    },
-    {
-      "Ticker": "035720",
-      "CompanyName": "카카오",
-      "ClosePrice": 48500,
-      "CANSLIM_Score": 5
-    }
-  ],
-  "turtle_signals": [
-    {
-      "Ticker": "005930",
-      "CompanyName": "삼성전자",
-      "ClosePrice": 70000,
-      "CANSLIM_Score": 5,
-      "Turtle_Signal": "S1_Buy"
-    },
-    {
-      "Ticker": "000660",
-      "CompanyName": "SK하이닉스",
-      "ClosePrice": 145000,
-      "CANSLIM_Score": 5,
-      "Turtle_Signal": "S2_Buy"
-    },
-    {
-      "Ticker": "035720",
-      "CompanyName": "카카오",
-      "ClosePrice": 48500,
-      "CANSLIM_Score": 5,
-      "Turtle_Signal": "S1_Exit"
-    }
-  ]
+  "last_updated": "2025-10-23 07:35:25 KST",
+  "cansl_passed": [],
+  "turtle_signals": []
 }
