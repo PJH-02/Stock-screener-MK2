@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from pykrx import stock
-from ..utils import setup_logger
+from utils import setup_logger
 
 logger = setup_logger('leadership_analyzer')
 
