@@ -26,35 +26,27 @@ class DataManager:
         
         self.today = datetime.now().strftime('%Y%m%d')
         self.start_date = (datetime.now() - timedelta(days=730)).strftime('%Y%m%d')
-    
+                       
     def get_universe(self):
-        """Get KOSPI 200 and KOSDAQ 150 stock tickers."""
-        logger.info("Fetching stock universe (KOSPI 200 + KOSDAQ 150)...")
-        
-        try:
-            kospi200 = stock.get_index_portfolio_deposit_file("1028", self.today)
-            kosdaq150 = stock.get_index_portfolio_deposit_file("2203", self.today)
-            
-            # Combine tickers
-            all_tickers = list(set(list(kospi200) + list(kosdaq150)))
-            
-            # Filter out preferred stocks and non-common stocks
-            common_stocks = []
-            for ticker in all_tickers:
-                try:
-                    # Check if it's a common stock (exclude preferred stocks ending with '0')
-                    if not ticker.endswith('0'):
-                        common_stocks.append(ticker)
-                except:
-                    continue
-            
-            logger.info(f"Found {len(common_stocks)} common stocks in universe")
-            return common_stocks
-            
-        except Exception as e:
-            logger.error(f"Error fetching universe: {e}")
-            return []
+    """Get KOSPI 200 and KOSDAQ 150 stock tickers."""
+    logger.info("Fetching stock universe (KOSPI 200 + KOSDAQ 150)...")
     
+    try:
+        kospi200 = stock.get_index_portfolio_deposit_file("1028", self.today)
+        kosdaq150 = stock.get_index_portfolio_deposit_file("2203", self.today)
+        
+        # Combine tickers and remove duplicates
+        all_tickers = list(set(list(kospi200) + list(kosdaq150)))
+        
+        logger.info(f"Found {len(all_tickers)} stocks in universe (including preferred stocks)")
+        
+        # Preferred stock filtering can be done later if needed
+        return all_tickers
+        
+    except Exception as e:
+        logger.error(f"Error fetching universe: {e}")
+        return []
+        
     @rate_limited(calls_per_second=2)
     def get_ohlcv(self, ticker, days=400):
         """Get OHLCV data for a ticker."""
