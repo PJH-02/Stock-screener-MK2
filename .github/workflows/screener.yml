@@ -1,8 +1,7 @@
-
 name: Stock Screener
 on:
   schedule:
-    # Runs at 18:30 KST (09:30 UTC) on weekdays
+      # Runs at 18:30 KST (09:30 UTC) on weekdays
     - cron: '30 9 * * 1-5'
   workflow_dispatch:
 
@@ -24,18 +23,21 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: Verify opendartreader installation
-      run: |
-        python -c "import OpenDartReader; print('✓ OpenDartReader imported successfully')"
-        
     - name: Run screener
       run: |
-        cd src
-        python main.py
+        python src/main.py
       env:
         DART_API_KEY: ${{ secrets.DART_API_KEY }}
         PYTHONPATH: ${{ github.workspace }}/src
-            
+        
+    - name: Check results
+      run: |
+        echo "=== Results directory ==="
+        ls -la results/ || echo "results/ directory not found"
+        echo ""
+        echo "=== Results file content (first 30 lines) ==="
+        cat results/screener_results.json | head -30 || echo "screener_results.json not found"
+        
     - name: Commit results
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -47,4 +49,4 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}    
+        branch: ${{ github.ref }}
