@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from ..utils import setup_logger
+from utils import setup_logger
 
 logger = setup_logger('earnings_analyzer')
 
