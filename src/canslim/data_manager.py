@@ -28,24 +28,24 @@ class DataManager:
         self.start_date = (datetime.now() - timedelta(days=730)).strftime('%Y%m%d')
                        
     def get_universe(self):
-    """Get KOSPI 200 and KOSDAQ 150 stock tickers."""
-    logger.info("Fetching stock universe (KOSPI 200 + KOSDAQ 150)...")
-    
-    try:
-        kospi200 = stock.get_index_portfolio_deposit_file("1028", self.today)
-        kosdaq150 = stock.get_index_portfolio_deposit_file("2203", self.today)
+        """Get KOSPI 200 and KOSDAQ 150 stock tickers."""
+        logger.info("Fetching stock universe (KOSPI 200 + KOSDAQ 150)...")
         
-        # Combine tickers and remove duplicates
-        all_tickers = list(set(list(kospi200) + list(kosdaq150)))
-        
-        logger.info(f"Found {len(all_tickers)} stocks in universe (including preferred stocks)")
-        
-        # Preferred stock filtering can be done later if needed
-        return all_tickers
-        
-    except Exception as e:
-        logger.error(f"Error fetching universe: {e}")
-        return []
+        try:
+            kospi200 = stock.get_index_portfolio_deposit_file("1028", self.today)
+            kosdaq150 = stock.get_index_portfolio_deposit_file("2203", self.today)
+            
+            # Combine tickers and remove duplicates
+            all_tickers = list(set(list(kospi200) + list(kosdaq150)))
+            
+            logger.info(f"Found {len(all_tickers)} stocks in universe (including preferred stocks)")
+            
+            # Preferred stock filtering can be done later if needed
+            return all_tickers
+            
+        except Exception as e:
+            logger.error(f"Error fetching universe: {e}")
+            return []
         
     @rate_limited(calls_per_second=2)
     def get_ohlcv(self, ticker, days=400):
