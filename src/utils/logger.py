@@ -5,6 +5,7 @@ def setup_logger(name='screener'):
     """Setup and return a logger with consistent formatting."""
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
+    logger.propagate = False
     
     # Avoid duplicate handlers
     if logger.handlers:

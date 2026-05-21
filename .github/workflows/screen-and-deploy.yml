@@ -1,0 +1,124 @@
+name: Screen and Deploy
+
+on:
+  schedule:
+    # Korea close: 18:30 KST = 09:30 UTC
+    - cron: "30 9 * * 1-5"
+    # US close: 07:30 KST next day = 22:30 UTC
+    - cron: "30 22 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      market:
+        description: "Market to screen"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - KR
+          - US
+      limit:
+        description: "Optional per-market limit for smoke tests"
+        required: false
+        type: string
+      skip_deploy:
+        description: "Run screening without deploying Pages"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    env:
+      DART_API_KEY: ${{ secrets.DART_API_KEY }}
+      SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT }}
+      REQUESTED_MARKET: ${{ github.event.inputs.market || '' }}
+      REQUESTED_LIMIT: ${{ github.event.inputs.limit || '' }}
+      TRIGGER_SCHEDULE: ${{ github.event.schedule }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: python -m pytest
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
+
+      - name: Resolve run options
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            MARKET="${REQUESTED_MARKET:-all}"
+          elif [[ "$TRIGGER_SCHEDULE" == "30 9 * * 1-5" ]]; then
+            MARKET="KR"
+          else
+            MARKET="US"
+          fi
+
+          echo "SCREEN_MARKET=$MARKET" >> "$GITHUB_ENV"
+          if [[ -n "$REQUESTED_LIMIT" ]]; then
+            echo "SCREEN_LIMIT=$REQUESTED_LIMIT" >> "$GITHUB_ENV"
+          fi
+
+      - name: Run screener
+        shell: bash
+        run: |
+          args=(--market "$SCREEN_MARKET")
+          if [[ -n "${SCREEN_LIMIT:-}" ]]; then
+            args+=(--limit "$SCREEN_LIMIT")
+          fi
+          python src/main.py "${args[@]}"
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
+
+      - name: Build Pages artifact directory
+        shell: bash
+        run: |
+          rm -rf _site
+          mkdir -p _site
+          cp -R public/. _site/
+          test -f _site/results/screener_results.json
+          python -m json.tool _site/results/screener_results.json > /dev/null
+
+      - name: Upload Pages artifact
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_deploy != 'true' }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_deploy != 'true' }}
+    needs: screen
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

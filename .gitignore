@@ -45,3 +45,8 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Local runtime artifacts
+.cache/
+_site/
+docs_cache/

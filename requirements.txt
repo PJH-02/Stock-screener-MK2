@@ -1,6 +1,8 @@
-pykrx==1.0.46
 pandas==2.1.4
 numpy==1.26.2
 OpenDartReader
 requests==2.31.0
 python-dateutil==2.8.2
+yfinance==0.2.54
+lxml==5.3.0
+pytest==8.3.4
