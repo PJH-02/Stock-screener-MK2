@@ -1,0 +1,165 @@
+{
+  "created_at": 1779371580.4849885,
+  "data": {
+    "source": "SEC companyfacts",
+    "annual": [
+      {
+        "year": 2009,
+        "period": "FY",
+        "net_income": 435994000.0,
+        "equity": 760339000.0
+      },
+      {
+        "year": 2010,
+        "period": "FY",
+        "net_income": 509799000.0,
+        "equity": 937601000.0,
+        "roe": 60.04911834340436
+      },
+      {
+        "year": 2011,
+        "period": "FY",
+        "net_income": 142133000.0,
+        "equity": 872648000.0,
+        "roe": 15.703143600686978
+      },
+      {
+        "year": 2012,
+        "period": "FY",
+        "net_income": 149879000.0,
+        "equity": 1048373000.0,
+        "roe": 15.604098029120973
+      },
+      {
+        "year": 2013,
+        "period": "FY",
+        "net_income": 820470000.0,
+        "equity": 1616052000.0,
+        "roe": 61.587021590024115
+      },
+      {
+        "year": 2014,
+        "period": "FY",
+        "net_income": 202508000.0,
+        "equity": 1519530000.0,
+        "roe": 12.916772707586663
+      },
+      {
+        "year": 2015,
+        "period": "FY",
+        "net_income": 227889000.0,
+        "equity": 1047462000.0,
+        "roe": 17.755333869369284
+      },
+      {
+        "year": 2016,
+        "period": "FY",
+        "net_income": 116853000.0,
+        "equity": 827687000.0,
+        "roe": 12.46332958074265
+      },
+      {
+        "year": 2017,
+        "period": "FY",
+        "net_income": 756537000.0,
+        "equity": 931565000.0,
+        "roe": 86.00666646961322
+      },
+      {
+        "year": 2018,
+        "period": "FY",
+        "net_income": 1171051000.0,
+        "equity": 1407266000.0,
+        "roe": 100.13985619311528
+      },
+      {
+        "year": 2019,
+        "period": "FY",
+        "net_income": 1146752000.0,
+        "equity": 1744994000.0,
+        "roe": 72.75745021032529
+      },
+      {
+        "year": 2020,
+        "period": "FY",
+        "net_income": 1275413000.0,
+        "equity": 2237883000.0,
+        "roe": 64.0448098196354
+      },
+      {
+        "year": 2021,
+        "period": "FY",
+        "net_income": 1482819000.0,
+        "equity": 2757229000.0,
+        "roe": 59.37080089495491
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "net_income": 1644817000.0,
+        "equity": 3299544000.0,
+        "roe": 54.313311725567395
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "net_income": 1861787000.0,
+        "equity": 4099086000.0,
+        "roe": 50.32788502736317
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "net_income": 2221239000.0,
+        "equity": 4714654000.0,
+        "roe": 50.40400556403979
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "net_income": 883259000.0,
+        "equity": 4636750000.0,
+        "roe": 18.890404050557542
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2008,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.19
+      },
+      {
+        "year": 2008,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.56
+      },
+      {
+        "year": 2009,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.34
+      },
+      {
+        "year": 2009,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.32
+      },
+      {
+        "year": 2009,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.73
+      },
+      {
+        "year": 2010,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.66
+      }
+    ],
+    "alerts": []
+  }
+}

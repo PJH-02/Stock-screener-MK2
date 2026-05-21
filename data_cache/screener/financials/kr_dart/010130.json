@@ -1,0 +1,95 @@
+{
+  "created_at": 1779370443.907062,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 45648.0,
+        "net_income": null,
+        "equity": 7734234462824.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 42967.0,
+        "net_income": null,
+        "equity": 9231732116548.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 26139.0,
+        "net_income": 533378688122.0,
+        "equity": 9642002868870.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 9488.0,
+        "net_income": 194781564506.0,
+        "equity": 7595427776993.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 42566.0,
+        "net_income": 770249337092.0,
+        "equity": 11184217875641.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 5150.0,
+        "net_income": null,
+        "equity": 9649854584613.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 8766.0,
+        "net_income": null,
+        "equity": 9758998455963.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 7635.0,
+        "net_income": null,
+        "equity": 9430810971880.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 8945.0,
+        "net_income": null,
+        "equity": 7654143693116.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 18227.0,
+        "net_income": null,
+        "equity": 7854622150076.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 3972.0,
+        "net_income": null,
+        "equity": 8035383483260.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 0.0,
+        "net_income": null,
+        "equity": 11459197821378.0
+      }
+    ],
+    "alerts": []
+  }
+}

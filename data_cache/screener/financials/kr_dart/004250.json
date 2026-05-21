@@ -1,0 +1,95 @@
+{
+  "created_at": 1779375264.7404518,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 624.0,
+        "net_income": 26181241315.0,
+        "equity": 323206045337.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 678.0,
+        "net_income": 28189180311.0,
+        "equity": 344414423651.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 650.0,
+        "net_income": 26735825055.0,
+        "equity": 364886720478.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 1893.0,
+        "net_income": 75812415320.0,
+        "equity": 438253096661.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 344.0,
+        "net_income": 12938555470.0,
+        "equity": 449410325266.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 125.0,
+        "net_income": null,
+        "equity": 366867717501.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 173.0,
+        "net_income": null,
+        "equity": 369036767362.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 2170.0,
+        "net_income": null,
+        "equity": 450105923168.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 53.0,
+        "net_income": null,
+        "equity": 436613662052.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 170.0,
+        "net_income": null,
+        "equity": 438359232748.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 103.0,
+        "net_income": null,
+        "equity": 445358991322.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 121.0,
+        "net_income": null,
+        "equity": 453098856542.0
+      }
+    ],
+    "alerts": []
+  }
+}

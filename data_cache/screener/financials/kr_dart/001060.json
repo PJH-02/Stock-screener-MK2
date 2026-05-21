@@ -1,0 +1,95 @@
+{
+  "created_at": 1779374628.8480253,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": -42.0,
+        "net_income": -1441453468.0,
+        "equity": 188539529698.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 1331.0,
+        "net_income": 29852560173.0,
+        "equity": 225759035573.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 1504.0,
+        "net_income": 38430259560.0,
+        "equity": 265440456801.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 2669.0,
+        "net_income": 65040120873.0,
+        "equity": 329486742125.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 2559.0,
+        "net_income": 61511192817.0,
+        "equity": 369369599885.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 816.0,
+        "net_income": null,
+        "equity": 275257076491.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 346.0,
+        "net_income": null,
+        "equity": 283480298507.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 807.0,
+        "net_income": null,
+        "equity": 303766503794.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 720.0,
+        "net_income": 17470544683.0,
+        "equity": 331085087491.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": -70.0,
+        "net_income": null,
+        "equity": 323276080753.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 1265.0,
+        "net_income": null,
+        "equity": 354099927737.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 1144.0,
+        "net_income": null,
+        "equity": 381779288560.0
+      }
+    ],
+    "alerts": []
+  }
+}

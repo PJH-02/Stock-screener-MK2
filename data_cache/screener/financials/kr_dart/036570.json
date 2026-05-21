@@ -1,0 +1,47 @@
+{
+  "created_at": 1779370779.757908,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 19318.0,
+        "net_income": 395734616139.0,
+        "equity": 3151226726374.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 21456.0,
+        "net_income": 435990309263.0,
+        "equity": 3198548842532.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 10446.0,
+        "net_income": 213914315973.0,
+        "equity": 3253028540550.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": null,
+        "net_income": 94115833907.0,
+        "equity": 3063588634574.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": null,
+        "net_income": 347421554268.0,
+        "equity": 3370430829195.0
+      }
+    ],
+    "quarterly": [],
+    "alerts": [
+      "No quarterly DART EPS records parsed."
+    ]
+  }
+}

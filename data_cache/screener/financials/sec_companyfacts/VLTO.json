@@ -1,0 +1,100 @@
+{
+  "created_at": 1779371809.511133,
+  "data": {
+    "source": "SEC companyfacts",
+    "annual": [
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 3.41,
+        "net_income": 839000000.0,
+        "equity": 1389000000.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 3.37,
+        "net_income": 833000000.0,
+        "equity": 2045000000.0,
+        "roe": 48.51485148514851
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 3.79,
+        "net_income": 940000000.0,
+        "equity": 3106000000.0,
+        "roe": 36.4977674238012
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2022,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.89
+      },
+      {
+        "year": 2023,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.91
+      },
+      {
+        "year": 2023,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.85
+      },
+      {
+        "year": 2023,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.83
+      },
+      {
+        "year": 2024,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.75
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.82
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.89
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.91
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.89
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.96
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 1.03
+      }
+    ],
+    "alerts": []
+  }
+}

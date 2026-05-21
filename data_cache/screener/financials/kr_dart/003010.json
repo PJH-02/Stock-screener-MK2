@@ -1,0 +1,95 @@
+{
+  "created_at": 1779375071.275925,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": null,
+        "net_income": 4900986362.0,
+        "equity": 101983399191.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 225.0,
+        "net_income": -2074104566.0,
+        "equity": 108047031390.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 689.0,
+        "net_income": 7404407309.0,
+        "equity": 114811452331.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 677.0,
+        "net_income": 7274399159.0,
+        "equity": 120265987485.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 1382.0,
+        "net_income": 14236946120.0,
+        "equity": 127629006006.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 158.0,
+        "net_income": 1696563492.0,
+        "equity": 116514410568.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 25.0,
+        "net_income": 267971220.0,
+        "equity": 114959292322.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 149.0,
+        "net_income": 1600753163.0,
+        "equity": 116557411946.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 30.0,
+        "net_income": 323440765.0,
+        "equity": 120592509163.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 561.0,
+        "net_income": 5974463265.0,
+        "equity": 123433378385.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 46.0,
+        "net_income": 482888186.0,
+        "equity": 121941280133.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 42.0,
+        "net_income": 415946812.0,
+        "equity": 128112091216.0
+      }
+    ],
+    "alerts": []
+  }
+}

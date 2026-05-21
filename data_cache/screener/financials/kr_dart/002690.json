@@ -1,0 +1,95 @@
+{
+  "created_at": 1779374895.3584921,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 542.0,
+        "net_income": 8250673190.0,
+        "equity": 153548172626.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 169.0,
+        "net_income": 3345149095.0,
+        "equity": 157680471138.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": -160.0,
+        "net_income": -3159795782.0,
+        "equity": 153236014334.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": -25.0,
+        "net_income": -483718262.0,
+        "equity": 153656469741.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 69.0,
+        "net_income": 1350334834.0,
+        "equity": 157613797772.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": -13.0,
+        "net_income": -245827543.0,
+        "equity": 155783104760.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 66.0,
+        "net_income": 1252026864.0,
+        "equity": 154125937805.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": -83.0,
+        "net_income": -1585276424.0,
+        "equity": 156624962101.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 22.0,
+        "net_income": 415198024.0,
+        "equity": 153483841968.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 79.0,
+        "net_income": 1495039710.0,
+        "equity": 155697335430.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 274.0,
+        "net_income": 5199084305.0,
+        "equity": 161549559509.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 33.0,
+        "net_income": 663266514.0,
+        "equity": 157796168452.0
+      }
+    ],
+    "alerts": []
+  }
+}

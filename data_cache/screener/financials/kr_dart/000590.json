@@ -1,0 +1,95 @@
+{
+  "created_at": 1779374566.5341854,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 12789.0,
+        "net_income": 21065820782.0,
+        "equity": 312195867796.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 12700.0,
+        "net_income": 18788497648.0,
+        "equity": 330428149572.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 15091.0,
+        "net_income": 22145557927.0,
+        "equity": 347206891081.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 29452.0,
+        "net_income": 37853224906.0,
+        "equity": 377496622222.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 16782.0,
+        "net_income": 20996079784.0,
+        "equity": 393726081741.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 5495.0,
+        "net_income": 7208735101.0,
+        "equity": 352898055489.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 5570.0,
+        "net_income": 7176300291.0,
+        "equity": 358070532188.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 3787.0,
+        "net_income": 5393052417.0,
+        "equity": 360682008880.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 5655.0,
+        "net_income": 6922117521.0,
+        "equity": 383139530927.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 1131.0,
+        "net_income": 1107481043.0,
+        "equity": 381868575038.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 5750.0,
+        "net_income": 7218723673.0,
+        "equity": 389690909774.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 6764.0,
+        "net_income": 8485960217.0,
+        "equity": 402540528423.0
+      }
+    ],
+    "alerts": []
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "created_at": 1779371336.358283,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 991.0,
+        "net_income": 152567141281.0,
+        "equity": 2105767609017.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 949.0,
+        "net_income": 147178596149.0,
+        "equity": null
+      }
+    ],
+    "quarterly": [],
+    "alerts": [
+      "No quarterly DART EPS records parsed."
+    ]
+  }
+}

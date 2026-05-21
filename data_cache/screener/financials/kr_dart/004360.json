@@ -1,0 +1,95 @@
+{
+  "created_at": 1779375282.4379437,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 2342.0,
+        "net_income": 52432741076.0,
+        "equity": 897156777368.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 4819.0,
+        "net_income": 105390804723.0,
+        "equity": 1003478779341.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 3203.0,
+        "net_income": 69963792685.0,
+        "equity": 1058236503181.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 3955.0,
+        "net_income": 85471393368.0,
+        "equity": 1134629636929.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 3012.0,
+        "net_income": 65602594475.0,
+        "equity": 1208591668021.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 1791.0,
+        "net_income": 38671102870.0,
+        "equity": 1091857450245.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 1383.0,
+        "net_income": 29939294183.0,
+        "equity": 1122152680167.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 693.0,
+        "net_income": 15009808985.0,
+        "equity": 1136431007584.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 1297.0,
+        "net_income": null,
+        "equity": 1157147143760.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 804.0,
+        "net_income": null,
+        "equity": 1178798246546.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 528.0,
+        "net_income": null,
+        "equity": 1197434967772.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 884.0,
+        "net_income": null,
+        "equity": 1227227616388.0
+      }
+    ],
+    "alerts": []
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "created_at": 1779370416.7748165,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 85377.0,
+        "net_income": 7195889963608.0,
+        "equity": 54804943351665.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 39126.0,
+        "net_income": 3560483538695.0,
+        "equity": 58257400589250.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 22382.0,
+        "net_income": 1845849532200.0,
+        "equity": 59663897393468.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 12250.0,
+        "net_income": 947580322052.0,
+        "equity": 61450367919684.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 8697.0,
+        "net_income": 504403472266.0,
+        "equity": 62377691037383.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 5719.0,
+        "net_income": null,
+        "equity": 60396769580176.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 6157.0,
+        "net_income": null,
+        "equity": 61212111608163.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 5694.0,
+        "net_income": null,
+        "equity": 61204411835763.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 3998.0,
+        "net_income": null,
+        "equity": 61673723393596.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 2114.0,
+        "net_income": null,
+        "equity": 60589900712160.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 5565.0,
+        "net_income": null,
+        "equity": 62057141670703.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 6178.0,
+        "net_income": null,
+        "equity": 63393155104641.0
+      }
+    ],
+    "alerts": []
+  }
+}

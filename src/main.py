@@ -12,7 +12,20 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from canslim import EarningsAnalyzer, LeadershipAnalyzer, NewnessAnalyzer, SupplyAnalyzer
-from market_providers import MarketProvider, Security, provider_for_market
+from market_providers import (
+    DART_PACER,
+    DART_STATEMENT_CACHE_TTL_HOURS,
+    FINANCIAL_CACHE_TTL_HOURS,
+    HTTP_MAX_ATTEMPTS,
+    HTTP_RETRY_STATUS_CODES,
+    NAVER_PACER,
+    PRICE_CACHE_TTL_HOURS,
+    SEC_PACER,
+    MarketProvider,
+    Security,
+    YAHOO_PACER,
+    provider_for_market,
+)
 from turtle import TurtleSignalGenerator
 from utils import setup_logger
 
@@ -38,6 +51,7 @@ class StockScreener:
         output: dict[str, Any] = {
             "generated_at": generated_at,
             "last_updated": generated_at,
+            "collection_scope": self.collection_scope(),
             "summary": {
                 "markets": self.markets,
                 "total_universe": 0,
@@ -60,6 +74,44 @@ class StockScreener:
             output["data_quality"]["alerts"].extend(market_result["data_quality"]["alerts"])
 
         return output
+
+    def collection_scope(self) -> dict[str, Any]:
+        current_year = datetime.now(ZoneInfo("Asia/Seoul")).year
+        return {
+            "KR": {
+                "universe": "Naver Finance KOSPI200 live table merged with bundled KR seed tickers for KOSDAQ coverage",
+                "prices": "Naver Finance daily OHLCV, 500 trading-day bars per ticker",
+                "financials": {
+                    "source": "OpenDART finstate_all",
+                    "annual_years": f"{current_year - 5}-{current_year - 1}",
+                    "quarterly_years": f"{current_year - 2}-{current_year}, published Q1/Q2/Q3 reports only",
+                },
+            },
+            "US": {
+                "universe": "Wikipedia S&P 500 + Nasdaq 100, de-duplicated by ticker",
+                "prices": "Yahoo chart daily OHLCV for the last 500 calendar days, with yfinance 2y fallback",
+                "financials": {
+                    "source": "SEC companyfacts",
+                    "coverage": "All available facts in the companyfacts payload; parser uses FY annual EPS/net income/equity and quarterly EPS facts",
+                },
+            },
+            "cache_policy": {
+                "prices": f"{PRICE_CACHE_TTL_HOURS:g} hours",
+                "financials": f"{FINANCIAL_CACHE_TTL_HOURS:g} hours",
+                "dart_statements": f"{DART_STATEMENT_CACHE_TTL_HOURS:g} hours",
+                "universes": "latest successful live fetch is stored as fallback",
+            },
+            "rate_limit_policy": {
+                "http_retry_statuses": sorted(HTTP_RETRY_STATUS_CODES),
+                "http_attempts": HTTP_MAX_ATTEMPTS,
+                "min_request_intervals_seconds": {
+                    "naver": NAVER_PACER.min_interval_seconds,
+                    "yahoo": YAHOO_PACER.min_interval_seconds,
+                    "sec": SEC_PACER.min_interval_seconds,
+                    "dart": DART_PACER.min_interval_seconds,
+                },
+            },
+        }
 
     def screen_market(self, provider: MarketProvider) -> dict[str, Any]:
         logger.info("Screening %s", provider.market_name)

@@ -1,0 +1,674 @@
+[
+  {
+    "stock_code": "064090",
+    "event_code": null,
+    "title": "[첨부추가]주요사항보고서(유상증자결정)",
+    "trading_days_elapsed": 378,
+    "accepted_at": "2025-05-08",
+    "rcept_no": "20250508000577"
+  },
+  {
+    "stock_code": "094940",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 428,
+    "accepted_at": "2025-03-19",
+    "rcept_no": "20250319001131"
+  },
+  {
+    "stock_code": "233250",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 436,
+    "accepted_at": "2025-03-11",
+    "rcept_no": "20250311000487"
+  },
+  {
+    "stock_code": "066620",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320000787"
+  },
+  {
+    "stock_code": "273640",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 428,
+    "accepted_at": "2025-03-19",
+    "rcept_no": "20250319000247"
+  },
+  {
+    "stock_code": "151860",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 428,
+    "accepted_at": "2025-03-19",
+    "rcept_no": "20250319001096"
+  },
+  {
+    "stock_code": "137080",
+    "event_code": null,
+    "title": "단일판매ㆍ공급계약체결              ",
+    "trading_days_elapsed": 402,
+    "accepted_at": "2025-04-14",
+    "rcept_no": "20250414900550"
+  },
+  {
+    "stock_code": "099440",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 429,
+    "accepted_at": "2025-03-18",
+    "rcept_no": "20250318000514"
+  },
+  {
+    "stock_code": "096240",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 429,
+    "accepted_at": "2025-03-18",
+    "rcept_no": "20250318000366"
+  },
+  {
+    "stock_code": "066900",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321001629"
+  },
+  {
+    "stock_code": "000320",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 434,
+    "accepted_at": "2025-03-13",
+    "rcept_no": "20250313001148"
+  },
+  {
+    "stock_code": "037440",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 430,
+    "accepted_at": "2025-03-17",
+    "rcept_no": "20250317000594"
+  },
+  {
+    "stock_code": "003460",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 436,
+    "accepted_at": "2025-03-11",
+    "rcept_no": "20250311001178"
+  },
+  {
+    "stock_code": "019170",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320000996"
+  },
+  {
+    "stock_code": "056730",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320001624"
+  },
+  {
+    "stock_code": "052960",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320000706"
+  },
+  {
+    "stock_code": "049960",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 428,
+    "accepted_at": "2025-03-19",
+    "rcept_no": "20250319001124"
+  },
+  {
+    "stock_code": "138080",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320001284"
+  },
+  {
+    "stock_code": "272290",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 429,
+    "accepted_at": "2025-03-18",
+    "rcept_no": "20250318001248"
+  },
+  {
+    "stock_code": "120030",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321001584"
+  },
+  {
+    "stock_code": "000590",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321001425"
+  },
+  {
+    "stock_code": "002220",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 434,
+    "accepted_at": "2025-03-13",
+    "rcept_no": "20250313000882"
+  },
+  {
+    "stock_code": "079950",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321001418"
+  },
+  {
+    "stock_code": "041930",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320000809"
+  },
+  {
+    "stock_code": "007610",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320001635"
+  },
+  {
+    "stock_code": "095270",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 428,
+    "accepted_at": "2025-03-19",
+    "rcept_no": "20250319000964"
+  },
+  {
+    "stock_code": "002450",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321000994"
+  },
+  {
+    "stock_code": "091340",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 434,
+    "accepted_at": "2025-03-13",
+    "rcept_no": "20250313001072"
+  },
+  {
+    "stock_code": "206640",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 430,
+    "accepted_at": "2025-03-17",
+    "rcept_no": "20250317000430"
+  },
+  {
+    "stock_code": "045520",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320000033"
+  },
+  {
+    "stock_code": "043650",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 429,
+    "accepted_at": "2025-03-18",
+    "rcept_no": "20250318000984"
+  },
+  {
+    "stock_code": "253840",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 429,
+    "accepted_at": "2025-03-18",
+    "rcept_no": "20250318000986"
+  },
+  {
+    "stock_code": "121060",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 430,
+    "accepted_at": "2025-03-17",
+    "rcept_no": "20250317000564"
+  },
+  {
+    "stock_code": "011560",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 428,
+    "accepted_at": "2025-03-19",
+    "rcept_no": "20250319000922"
+  },
+  {
+    "stock_code": "039440",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 434,
+    "accepted_at": "2025-03-13",
+    "rcept_no": "20250313000331"
+  },
+  {
+    "stock_code": "170920",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320000998"
+  },
+  {
+    "stock_code": "104200",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320001006"
+  },
+  {
+    "stock_code": "038070",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 429,
+    "accepted_at": "2025-03-18",
+    "rcept_no": "20250318001335"
+  },
+  {
+    "stock_code": "039340",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320000818"
+  },
+  {
+    "stock_code": "049480",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320001668"
+  },
+  {
+    "stock_code": "032960",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 433,
+    "accepted_at": "2025-03-14",
+    "rcept_no": "20250314000497"
+  },
+  {
+    "stock_code": "054040",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321001158"
+  },
+  {
+    "stock_code": "040160",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 429,
+    "accepted_at": "2025-03-18",
+    "rcept_no": "20250318000332"
+  },
+  {
+    "stock_code": "078070",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 429,
+    "accepted_at": "2025-03-18",
+    "rcept_no": "20250318001391"
+  },
+  {
+    "stock_code": "155650",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 433,
+    "accepted_at": "2025-03-14",
+    "rcept_no": "20250314001070"
+  },
+  {
+    "stock_code": "065690",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321000782"
+  },
+  {
+    "stock_code": "379390",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321001954"
+  },
+  {
+    "stock_code": "008420",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 434,
+    "accepted_at": "2025-03-13",
+    "rcept_no": "20250313000869"
+  },
+  {
+    "stock_code": "006200",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 428,
+    "accepted_at": "2025-03-19",
+    "rcept_no": "20250319001004"
+  },
+  {
+    "stock_code": "015710",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 429,
+    "accepted_at": "2025-03-18",
+    "rcept_no": "20250318001160"
+  },
+  {
+    "stock_code": "004490",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 435,
+    "accepted_at": "2025-03-12",
+    "rcept_no": "20250312000986"
+  },
+  {
+    "stock_code": "317830",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321001744"
+  },
+  {
+    "stock_code": "008250",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321001836"
+  },
+  {
+    "stock_code": "008370",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320000892"
+  },
+  {
+    "stock_code": "208350",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320001300"
+  },
+  {
+    "stock_code": "187270",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321000785"
+  },
+  {
+    "stock_code": "025880",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 437,
+    "accepted_at": "2025-03-10",
+    "rcept_no": "20250310000662"
+  },
+  {
+    "stock_code": "024940",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 426,
+    "accepted_at": "2025-03-21",
+    "rcept_no": "20250321000948"
+  },
+  {
+    "stock_code": "054920",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 428,
+    "accepted_at": "2025-03-19",
+    "rcept_no": "20250319001054"
+  },
+  {
+    "stock_code": "039420",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 427,
+    "accepted_at": "2025-03-20",
+    "rcept_no": "20250320001004"
+  },
+  {
+    "stock_code": "065680",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 429,
+    "accepted_at": "2025-03-18",
+    "rcept_no": "20250318000538"
+  },
+  {
+    "stock_code": "076340",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 428,
+    "accepted_at": "2025-03-19",
+    "rcept_no": "20250319000137"
+  },
+  {
+    "stock_code": "035610",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 428,
+    "accepted_at": "2025-03-19",
+    "rcept_no": "20250319000634"
+  },
+  {
+    "stock_code": "131180",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 430,
+    "accepted_at": "2025-03-17",
+    "rcept_no": "20250317000753"
+  },
+  {
+    "stock_code": "012800",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 429,
+    "accepted_at": "2025-03-18",
+    "rcept_no": "20250318001233"
+  },
+  {
+    "stock_code": "065530",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 423,
+    "accepted_at": "2025-03-24",
+    "rcept_no": "20250324000885"
+  },
+  {
+    "stock_code": "007370",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 435,
+    "accepted_at": "2025-03-12",
+    "rcept_no": "20250312001044"
+  },
+  {
+    "stock_code": "276040",
+    "event_code": null,
+    "title": "[첨부추가]주요사항보고서(유형자산양수결정)",
+    "trading_days_elapsed": 401,
+    "accepted_at": "2025-04-15",
+    "rcept_no": "20250415000556"
+  },
+  {
+    "stock_code": "456160",
+    "event_code": null,
+    "title": "[첨부추가]분기보고서 (2025.03)",
+    "trading_days_elapsed": 372,
+    "accepted_at": "2025-05-14",
+    "rcept_no": "20250514000801"
+  },
+  {
+    "stock_code": "031510",
+    "event_code": null,
+    "title": "[첨부추가]사업보고서 (2024.12)",
+    "trading_days_elapsed": 428,
+    "accepted_at": "2025-03-19",
+    "rcept_no": "20250319001017"
+  },
+  {
+    "stock_code": "484120",
+    "event_code": null,
+    "title": "[첨부추가]증권신고서(지분증권)",
+    "trading_days_elapsed": 386,
+    "accepted_at": "2025-04-30",
+    "rcept_no": "20250430001506"
+  },
+  {
+    "stock_code": "234030",
+    "event_code": null,
+    "title": "[첨부추가]증권신고서(지분증권)",
+    "trading_days_elapsed": 384,
+    "accepted_at": "2025-05-02",
+    "rcept_no": "20250502000339"
+  },
+  {
+    "stock_code": "0030R0",
+    "event_code": null,
+    "title": "증권신고서(집합투자증권-회사형)((주)대신밸류리츠위탁관리부동산투자회사)",
+    "trading_days_elapsed": 377,
+    "accepted_at": "2025-05-09",
+    "rcept_no": "20250509000401"
+  },
+  {
+    "stock_code": "365550",
+    "event_code": null,
+    "title": "증권신고서(집합투자증권-회사형)(이에스알켄달스퀘어위탁관리부동산투자회사㈜)",
+    "trading_days_elapsed": 374,
+    "accepted_at": "2025-05-12",
+    "rcept_no": "20250512000667"
+  },
+  {
+    "stock_code": "439730",
+    "event_code": null,
+    "title": "주권매매거래정지              (상장폐지사유 발생)",
+    "trading_days_elapsed": 366,
+    "accepted_at": "2025-05-20",
+    "rcept_no": "20250520900574"
+  },
+  {
+    "stock_code": "099520",
+    "event_code": null,
+    "title": "주권매매거래정지기간변경              (개선기간 부여)",
+    "trading_days_elapsed": 366,
+    "accepted_at": "2025-05-20",
+    "rcept_no": "20250520900577"
+  },
+  {
+    "stock_code": "438580",
+    "event_code": null,
+    "title": "기타시장안내              (주권 상장폐지 우려 예고)",
+    "trading_days_elapsed": 366,
+    "accepted_at": "2025-05-20",
+    "rcept_no": "20250520900571"
+  },
+  {
+    "stock_code": "439250",
+    "event_code": null,
+    "title": "주권매매거래정지              (상장폐지 사유발생)",
+    "trading_days_elapsed": 366,
+    "accepted_at": "2025-05-20",
+    "rcept_no": "20250520900554"
+  },
+  {
+    "stock_code": "204210",
+    "event_code": null,
+    "title": "[기재정정]횡령ㆍ배임혐의발생              ",
+    "trading_days_elapsed": 366,
+    "accepted_at": "2025-05-20",
+    "rcept_no": "20250520800545"
+  },
+  {
+    "stock_code": "099520",
+    "event_code": null,
+    "title": "기타시장안내              (코스닥시장위원회 심의·의결 결과 및 개선기간 부여 안내)",
+    "trading_days_elapsed": 366,
+    "accepted_at": "2025-05-20",
+    "rcept_no": "20250520900510"
+  },
+  {
+    "stock_code": "495810",
+    "event_code": null,
+    "title": "주주명부폐쇄기간또는기준일설정              ",
+    "trading_days_elapsed": 366,
+    "accepted_at": "2025-05-20",
+    "rcept_no": "20250520600497"
+  },
+  {
+    "stock_code": "478560",
+    "event_code": null,
+    "title": "[기재정정]타법인주식및출자증권취득결정(종속회사의주요경영사항)              ",
+    "trading_days_elapsed": 366,
+    "accepted_at": "2025-05-20",
+    "rcept_no": "20250520900548"
+  },
+  {
+    "stock_code": "388610",
+    "event_code": null,
+    "title": "[기재정정]주요사항보고서(유상증자결정)",
+    "trading_days_elapsed": 366,
+    "accepted_at": "2025-05-20",
+    "rcept_no": "20250520000327"
+  },
+  {
+    "stock_code": "234300",
+    "event_code": null,
+    "title": "단일판매ㆍ공급계약해지              ",
+    "trading_days_elapsed": 366,
+    "accepted_at": "2025-05-20",
+    "rcept_no": "20250520900534"
+  }
+]

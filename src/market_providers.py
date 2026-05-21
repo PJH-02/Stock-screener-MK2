@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import random
 import re
 import time
 import contextlib
@@ -35,7 +36,7 @@ logger = setup_logger("market_providers")
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 SEED_FILE = Path(__file__).resolve().parent / "data" / "universe_seed.json"
-CACHE_DIR = ROOT_DIR / ".cache" / "screener"
+CACHE_DIR = Path(os.environ.get("SCREENER_CACHE_DIR", ROOT_DIR / "data_cache" / "screener"))
 
 
 def load_env_file(path: Path = ROOT_DIR / ".env") -> None:
@@ -54,6 +55,122 @@ def load_env_file(path: Path = ROOT_DIR / ".env") -> None:
 
 
 load_env_file()
+
+
+HTTP_RETRY_STATUS_CODES = {429, 500, 502, 503, 504}
+HTTP_MAX_ATTEMPTS = int(os.environ.get("SCREENER_HTTP_MAX_ATTEMPTS", "3"))
+HTTP_BACKOFF_SECONDS = float(os.environ.get("SCREENER_HTTP_BACKOFF_SECONDS", "1.0"))
+PRICE_CACHE_TTL_HOURS = float(os.environ.get("SCREENER_PRICE_CACHE_HOURS", "18"))
+FINANCIAL_CACHE_TTL_HOURS = float(os.environ.get("SCREENER_FINANCIAL_CACHE_HOURS", "168"))
+DART_STATEMENT_CACHE_TTL_HOURS = float(os.environ.get("SCREENER_DART_STATEMENT_CACHE_HOURS", "168"))
+UNIVERSE_CACHE_TTL_HOURS = float(os.environ.get("SCREENER_UNIVERSE_CACHE_HOURS", "24"))
+SEC_TICKER_CIK_CACHE_TTL_HOURS = float(os.environ.get("SCREENER_SEC_CIK_CACHE_HOURS", "168"))
+
+
+class RequestPacer:
+    """Small process-local rate limiter for polite sequential API calls."""
+
+    def __init__(self, min_interval_seconds: float) -> None:
+        self.min_interval_seconds = min_interval_seconds
+        self.last_request_at = 0.0
+
+    def wait(self) -> None:
+        elapsed = time.monotonic() - self.last_request_at
+        delay = self.min_interval_seconds - elapsed
+        if delay > 0:
+            time.sleep(delay)
+        self.last_request_at = time.monotonic()
+
+
+YAHOO_PACER = RequestPacer(float(os.environ.get("SCREENER_YAHOO_MIN_INTERVAL_SECONDS", "0.2")))
+NAVER_PACER = RequestPacer(float(os.environ.get("SCREENER_NAVER_MIN_INTERVAL_SECONDS", "0.2")))
+SEC_PACER = RequestPacer(float(os.environ.get("SCREENER_SEC_MIN_INTERVAL_SECONDS", "0.2")))
+DART_PACER = RequestPacer(float(os.environ.get("SCREENER_DART_MIN_INTERVAL_SECONDS", "0.35")))
+
+
+def safe_cache_part(value: str) -> str:
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", value)
+
+
+def cache_path(*parts: str) -> Path:
+    path = CACHE_DIR.joinpath(*(safe_cache_part(str(part)) for part in parts))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def read_json_cache(path: Path, ttl_hours: float) -> Any | None:
+    if not path.exists():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        created_at = float(payload.get("created_at", 0))
+        if time.time() - created_at > ttl_hours * 3600:
+            return None
+        return payload.get("data")
+    except Exception:
+        return None
+
+
+def write_json_cache(path: Path, data: Any) -> None:
+    payload = {"created_at": time.time(), "data": data}
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def read_dataframe_cache(path: Path, ttl_hours: float) -> pd.DataFrame | None:
+    data = read_json_cache(path, ttl_hours)
+    if data is None:
+        return None
+    return pd.DataFrame(data)
+
+
+def write_dataframe_cache(path: Path, df: pd.DataFrame) -> None:
+    records = json.loads(df.to_json(orient="records", date_format="iso", force_ascii=False))
+    write_json_cache(path, records)
+
+
+def retry_delay(response: requests.Response | None, attempt: int, backoff_seconds: float) -> float:
+    if response is not None:
+        retry_after = response.headers.get("Retry-After")
+        if retry_after:
+            try:
+                return min(float(retry_after), 60.0)
+            except ValueError:
+                pass
+    jitter = random.uniform(0, 0.25)
+    return min(backoff_seconds * (2**attempt) + jitter, 30.0)
+
+
+def request_get_with_retry(
+    url: str,
+    *,
+    session: requests.Session | None = None,
+    pacer: RequestPacer | None = None,
+    attempts: int = HTTP_MAX_ATTEMPTS,
+    backoff_seconds: float = HTTP_BACKOFF_SECONDS,
+    **kwargs: Any,
+) -> requests.Response:
+    requester = session or requests
+    last_error: Exception | None = None
+    for attempt in range(attempts):
+        if pacer is not None:
+            pacer.wait()
+        response: requests.Response | None = None
+        try:
+            response = requester.get(url, **kwargs)
+            if response.status_code in HTTP_RETRY_STATUS_CODES and attempt < attempts - 1:
+                time.sleep(retry_delay(response, attempt, backoff_seconds))
+                continue
+            response.raise_for_status()
+            return response
+        except requests.RequestException as exc:
+            last_error = exc
+            if attempt >= attempts - 1:
+                raise
+            time.sleep(retry_delay(response, attempt, backoff_seconds))
+    if last_error is not None:
+        raise last_error
+    raise RuntimeError(f"Failed to fetch {url}")
 
 
 @dataclass
@@ -118,9 +235,13 @@ def normalize_ohlcv(df: pd.DataFrame, columns: dict[str, str], currency: str) ->
 
 
 def get_yahoo_chart_ohlcv(symbol: str, days: int) -> pd.DataFrame:
+    cached = read_dataframe_cache(cache_path("prices", "yahoo", f"{symbol}_{days}.json"), PRICE_CACHE_TTL_HOURS)
+    if cached is not None:
+        return cached
+
     period2 = int(time.time())
     period1 = period2 - (days * 86400)
-    response = requests.get(
+    response = request_get_with_retry(
         f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
         params={
             "period1": period1,
@@ -131,8 +252,8 @@ def get_yahoo_chart_ohlcv(symbol: str, days: int) -> pd.DataFrame:
         },
         timeout=30,
         headers={"User-Agent": "Mozilla/5.0"},
+        pacer=YAHOO_PACER,
     )
-    response.raise_for_status()
     result = (response.json().get("chart", {}).get("result") or [None])[0]
     if not result:
         return pd.DataFrame()
@@ -140,7 +261,7 @@ def get_yahoo_chart_ohlcv(symbol: str, days: int) -> pd.DataFrame:
     quote = ((result.get("indicators", {}).get("quote") or [{}])[0]) or {}
     if not timestamps or not quote:
         return pd.DataFrame()
-    return pd.DataFrame(
+    df = pd.DataFrame(
         {
             "Date": pd.to_datetime(timestamps, unit="s"),
             "Open": quote.get("open"),
@@ -150,22 +271,31 @@ def get_yahoo_chart_ohlcv(symbol: str, days: int) -> pd.DataFrame:
             "Volume": quote.get("volume"),
         }
     )
+    write_dataframe_cache(cache_path("prices", "yahoo", f"{symbol}_{days}.json"), df)
+    return df
 
 
 def get_naver_kr_ohlcv(ticker: str, days: int) -> pd.DataFrame:
-    response = requests.get(
+    ticker = str(ticker).zfill(6)
+    cached = read_dataframe_cache(cache_path("prices", "naver_kr", f"{ticker}_{days}.json"), PRICE_CACHE_TTL_HOURS)
+    if cached is not None:
+        return cached
+
+    response = request_get_with_retry(
         "https://fchart.stock.naver.com/sise.nhn",
         params={
-            "symbol": str(ticker).zfill(6),
+            "symbol": ticker,
             "timeframe": "day",
             "count": max(days, 1),
             "requestType": "0",
         },
         timeout=30,
         headers={"User-Agent": "Mozilla/5.0"},
+        pacer=NAVER_PACER,
     )
-    response.raise_for_status()
-    return parse_naver_kr_chart(response.content)
+    df = parse_naver_kr_chart(response.content)
+    write_dataframe_cache(cache_path("prices", "naver_kr", f"{ticker}_{days}.json"), df)
+    return df
 
 
 def parse_naver_kr_chart(content: bytes | str) -> pd.DataFrame:
@@ -313,6 +443,11 @@ class KRProvider(MarketProvider):
         )
 
     def get_financials(self, security: Security) -> dict[str, Any]:
+        financial_cache = cache_path("financials", "kr_dart", f"{security.ticker}.json")
+        cached = read_json_cache(financial_cache, FINANCIAL_CACHE_TTL_HOURS)
+        if cached is not None:
+            return cached
+
         financials: dict[str, Any] = {"source": "DART", "annual": [], "quarterly": [], "alerts": []}
         if self.dart is None:
             financials["alerts"].append("DART reader unavailable.")
@@ -322,14 +457,13 @@ class KRProvider(MarketProvider):
         annual: list[dict[str, Any]] = []
         quarterly: list[dict[str, Any]] = []
 
-        for year in range(current_year - 5, current_year + 1):
+        for year in range(current_year - 5, current_year):
             df = self._fetch_dart_statement(security.ticker, year, "11011")
             if df is not None and not df.empty:
                 annual.append(self._parse_dart_report(df, year, "FY"))
 
-        report_codes = {"11013": 1, "11012": 2, "11014": 3}
         for year in range(current_year - 2, current_year + 1):
-            for report_code, quarter in report_codes.items():
+            for report_code, quarter in self._quarter_report_codes_for_year(year).items():
                 df = self._fetch_dart_statement(security.ticker, year, report_code)
                 if df is not None and not df.empty:
                     quarterly.append(self._parse_dart_report(df, year, f"Q{quarter}", quarterly=True))
@@ -340,6 +474,8 @@ class KRProvider(MarketProvider):
             financials["alerts"].append("No annual DART financial statements parsed.")
         if not financials["quarterly"]:
             financials["alerts"].append("No quarterly DART EPS records parsed.")
+        if financials["annual"] or financials["quarterly"]:
+            write_json_cache(financial_cache, financials)
         return financials
 
     def _security_from_ticker(self, ticker: str) -> Security:
@@ -350,13 +486,13 @@ class KRProvider(MarketProvider):
         securities: list[Security] = []
         seen: set[str] = set()
         for page in range(1, 25):
-            response = requests.get(
+            response = request_get_with_retry(
                 "https://finance.naver.com/sise/entryJongmok.naver",
                 params={"page": page},
                 timeout=30,
                 headers={"User-Agent": "Mozilla/5.0"},
+                pacer=NAVER_PACER,
             )
-            response.raise_for_status()
             text = response.content.decode("euc-kr", errors="replace")
             matches = re.findall(r"/item/main\.naver\?code=(\d{6})[^>]*>([^<]+)", text)
             if not matches:
@@ -380,14 +516,52 @@ class KRProvider(MarketProvider):
 
     def _fetch_dart_statement(self, ticker: str, year: int, report_code: str) -> pd.DataFrame | None:
         for fs_div in ("CFS", "OFS"):
+            statement_cache = cache_path("statements", "kr_dart", f"{ticker}_{year}_{report_code}_{fs_div}.json")
+            cached = read_dataframe_cache(statement_cache, DART_STATEMENT_CACHE_TTL_HOURS)
+            if cached is not None:
+                if not cached.empty:
+                    return cached
+                continue
+
             try:
-                with contextlib.redirect_stdout(StringIO()):
-                    df = self.dart.finstate_all(ticker, year, reprt_code=report_code, fs_div=fs_div)
-            except Exception:
+                df = self._dart_finstate_all_with_retry(ticker, year, report_code, fs_div)
+            except Exception as exc:
+                logger.debug("DART statement fetch failed for %s %s %s %s: %s", ticker, year, report_code, fs_div, exc)
                 df = None
             if isinstance(df, pd.DataFrame) and not df.empty:
+                write_dataframe_cache(statement_cache, df)
                 return df
+            write_dataframe_cache(statement_cache, pd.DataFrame())
         return None
+
+    def _dart_finstate_all_with_retry(self, ticker: str, year: int, report_code: str, fs_div: str) -> pd.DataFrame | None:
+        last_error: Exception | None = None
+        for attempt in range(HTTP_MAX_ATTEMPTS):
+            DART_PACER.wait()
+            try:
+                with contextlib.redirect_stdout(StringIO()):
+                    return self.dart.finstate_all(ticker, year, reprt_code=report_code, fs_div=fs_div)
+            except Exception as exc:
+                last_error = exc
+                if attempt >= HTTP_MAX_ATTEMPTS - 1:
+                    raise
+                time.sleep(min(HTTP_BACKOFF_SECONDS * (2**attempt) + random.uniform(0, 0.25), 30.0))
+        if last_error is not None:
+            raise last_error
+        return None
+
+    def _quarter_report_codes_for_year(self, year: int) -> dict[str, int]:
+        current = datetime.now()
+        report_codes = {"11013": 1, "11012": 2, "11014": 3}
+        if year < current.year:
+            return report_codes
+        if current.month >= 11:
+            return report_codes
+        if current.month >= 8:
+            return {"11013": 1, "11012": 2}
+        if current.month >= 5:
+            return {"11013": 1}
+        return {}
 
     def _parse_dart_report(self, df: pd.DataFrame, year: int, period: str, quarterly: bool = False) -> dict[str, Any]:
         amount_col = "thstrm_q_amount" if quarterly and "thstrm_q_amount" in df.columns else "thstrm_amount"
@@ -447,11 +621,17 @@ class USProvider(MarketProvider):
 
     def get_ohlcv(self, security: Security, days: int = 500) -> pd.DataFrame:
         symbol = security.ticker.replace(".", "-")
-        df = get_yahoo_chart_ohlcv(symbol, days)
+        try:
+            df = get_yahoo_chart_ohlcv(symbol, days)
+        except Exception as exc:
+            logger.debug("Yahoo chart fetch failed for %s: %s", symbol, exc)
+            df = pd.DataFrame()
         if (df is None or df.empty) and yf is not None:
             df = yf.download(symbol, period="2y", progress=False, auto_adjust=False, threads=False)
             if isinstance(df.columns, pd.MultiIndex):
                 df.columns = df.columns.get_level_values(0)
+            if df is not None and not df.empty:
+                write_dataframe_cache(cache_path("prices", "yahoo", f"{symbol}_{days}.json"), df)
         return normalize_ohlcv(
             df,
             {"Date": "date", "Open": "open", "High": "high", "Low": "low", "Close": "close", "Volume": "volume"},
@@ -459,15 +639,23 @@ class USProvider(MarketProvider):
         )
 
     def get_financials(self, security: Security) -> dict[str, Any]:
+        financial_cache = cache_path("financials", "sec_companyfacts", f"{security.ticker}.json")
+        cached = read_json_cache(financial_cache, FINANCIAL_CACHE_TTL_HOURS)
+        if cached is not None:
+            return cached
+
         financials: dict[str, Any] = {"source": "SEC companyfacts", "annual": [], "quarterly": [], "alerts": []}
         cik = self._get_cik(security.ticker)
         if cik is None:
             financials["alerts"].append("No SEC CIK mapping found.")
             return financials
         try:
-            time.sleep(0.12)
-            response = self.session.get(self.sec_companyfacts_url.format(cik=cik), timeout=30)
-            response.raise_for_status()
+            response = request_get_with_retry(
+                self.sec_companyfacts_url.format(cik=cik),
+                session=self.session,
+                timeout=30,
+                pacer=SEC_PACER,
+            )
             payload = response.json()
         except Exception as exc:
             financials["alerts"].append(f"Failed to fetch SEC companyfacts: {exc}")
@@ -479,6 +667,8 @@ class USProvider(MarketProvider):
             financials["alerts"].append("No annual SEC financial facts parsed.")
         if not financials["quarterly"]:
             financials["alerts"].append("No quarterly SEC EPS facts parsed.")
+        if financials["annual"] or financials["quarterly"]:
+            write_json_cache(financial_cache, financials)
         return financials
 
     def _fetch_wikipedia_universe(self) -> list[Security]:
@@ -506,8 +696,12 @@ class USProvider(MarketProvider):
         name_candidates: tuple[str, ...],
         sector_candidates: tuple[str, ...],
     ) -> list[Security]:
-        response = requests.get(url, timeout=30, headers={"User-Agent": "Stock-screener-MK2/1.0"})
-        response.raise_for_status()
+        response = request_get_with_retry(
+            url,
+            timeout=30,
+            headers={"User-Agent": "Stock-screener-MK2/1.0"},
+            pacer=YAHOO_PACER,
+        )
         tables = pd.read_html(StringIO(response.text))
         for table in tables:
             symbol_col = next((col for col in symbol_candidates if col in table.columns), None)
@@ -537,18 +731,22 @@ class USProvider(MarketProvider):
         if self._ticker_cik is not None:
             return self._ticker_cik
         cache_path = self._cache_file("sec_ticker_cik")
+        cached = read_json_cache(cache_path, SEC_TICKER_CIK_CACHE_TTL_HOURS)
+        if cached is not None:
+            self._ticker_cik = {ticker: int(cik) for ticker, cik in cached.items()}
+            return self._ticker_cik
         if cache_path.exists():
             try:
                 cached = json.loads(cache_path.read_text(encoding="utf-8"))
-                self._ticker_cik = {ticker: int(cik) for ticker, cik in cached.items()}
-                return self._ticker_cik
+                if isinstance(cached, dict) and "data" not in cached:
+                    self._ticker_cik = {ticker: int(cik) for ticker, cik in cached.items()}
+                    return self._ticker_cik
             except Exception:
                 pass
-        response = self.session.get(self.sec_ticker_url, timeout=30)
-        response.raise_for_status()
+        response = request_get_with_retry(self.sec_ticker_url, session=self.session, timeout=30, pacer=SEC_PACER)
         payload = response.json()
         mapping = {item["ticker"].upper(): int(item["cik_str"]) for item in payload.values()}
-        cache_path.write_text(json.dumps(mapping, indent=2), encoding="utf-8")
+        write_json_cache(cache_path, mapping)
         self._ticker_cik = mapping
         return mapping
 

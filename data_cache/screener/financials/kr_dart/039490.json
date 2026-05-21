@@ -1,0 +1,81 @@
+{
+  "created_at": 1779370623.9121788,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 24011.0,
+        "net_income": null,
+        "equity": null
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 29370.0,
+        "net_income": null,
+        "equity": null
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 10458.0,
+        "net_income": 1114974212697.0,
+        "equity": 6722405133984.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 9608.0,
+        "net_income": null,
+        "equity": null
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 9094.0,
+        "net_income": null,
+        "equity": null
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 8542.0,
+        "net_income": null,
+        "equity": null
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 8345.0,
+        "net_income": 235599580315.0,
+        "equity": null
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 6550.0,
+        "net_income": null,
+        "equity": 6032403797669.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 3883.0,
+        "net_income": 322382473016.0,
+        "equity": 6432023635784.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 15067.0,
+        "net_income": null,
+        "equity": 6980600912258.0
+      }
+    ],
+    "alerts": []
+  }
+}

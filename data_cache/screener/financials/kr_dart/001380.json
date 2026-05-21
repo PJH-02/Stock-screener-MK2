@@ -1,0 +1,95 @@
+{
+  "created_at": 1779374703.9238768,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": -123.0,
+        "net_income": -5550659560.0,
+        "equity": 122979798064.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": -54.0,
+        "net_income": -2445648212.0,
+        "equity": 121160192606.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 449.0,
+        "net_income": 20175100732.0,
+        "equity": 141051733708.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 140.0,
+        "net_income": 6316098065.0,
+        "equity": 149705433926.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 62.0,
+        "net_income": 2806712344.0,
+        "equity": 151978568957.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 79.0,
+        "net_income": 3543089442.0,
+        "equity": 145435905781.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 64.0,
+        "net_income": 2906595580.0,
+        "equity": 148887559328.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": -86.0,
+        "net_income": -2558735279.0,
+        "equity": 145395658608.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 29.0,
+        "net_income": 1321429987.0,
+        "equity": 150941692513.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 35.0,
+        "net_income": 1567796736.0,
+        "equity": 150671295946.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": -8.0,
+        "net_income": -380267599.0,
+        "equity": 150934316905.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 47.0,
+        "net_income": 2123858589.0,
+        "equity": 155211203002.0
+      }
+    ],
+    "alerts": []
+  }
+}

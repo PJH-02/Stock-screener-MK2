@@ -1,0 +1,95 @@
+{
+  "created_at": 1779374870.004857,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 294.0,
+        "net_income": 23763505157.0,
+        "equity": 253911121266.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 186.0,
+        "net_income": 15067692450.0,
+        "equity": 260652700315.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 42.0,
+        "net_income": 3388984566.0,
+        "equity": 262202613136.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 41.0,
+        "net_income": 3121071310.0,
+        "equity": 272153151245.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 232.0,
+        "net_income": 17274756148.0,
+        "equity": 279903440455.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 132.0,
+        "net_income": 10686460063.0,
+        "equity": 270439473279.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": -63.0,
+        "net_income": -4829609528.0,
+        "equity": 265206781883.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": -34.0,
+        "net_income": -2610960629.0,
+        "equity": 260099755229.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 63.0,
+        "net_income": 4828056882.0,
+        "equity": 271403742257.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 199.0,
+        "net_income": 15120646671.0,
+        "equity": 274583564810.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 14.0,
+        "net_income": 1070476117.0,
+        "equity": 279983159331.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 167.0,
+        "net_income": 12699510701.0,
+        "equity": 297144864610.0
+      }
+    ],
+    "alerts": []
+  }
+}

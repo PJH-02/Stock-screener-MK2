@@ -1,0 +1,95 @@
+{
+  "created_at": 1779370572.299616,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 1621.0,
+        "net_income": 11398827028.0,
+        "equity": 66001080624.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 4212.0,
+        "net_income": 29954676293.0,
+        "equity": 100257994716.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 11096.0,
+        "net_income": 81546050952.0,
+        "equity": 196948868778.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 2819.0,
+        "net_income": 107590435967.0,
+        "equity": 323524073990.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 7718.0,
+        "net_income": 289654813287.0,
+        "equity": 445799810314.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 3346.0,
+        "net_income": null,
+        "equity": 297475565315.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 2997.0,
+        "net_income": null,
+        "equity": 308725824074.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 2092.0,
+        "net_income": null,
+        "equity": 281527447925.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 1345.0,
+        "net_income": null,
+        "equity": 345522848617.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 1774.0,
+        "net_income": null,
+        "equity": 408131939548.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 1994.0,
+        "net_income": null,
+        "equity": 348710270320.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 3132.0,
+        "net_income": null,
+        "equity": 506580289845.0
+      }
+    ],
+    "alerts": []
+  }
+}

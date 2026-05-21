@@ -1,0 +1,122 @@
+[
+  {
+    "stock_code": "045510",
+    "event_code": null,
+    "title": "[첨부추가]단일판매ㆍ공급계약체결              ",
+    "trading_days_elapsed": 252,
+    "accepted_at": "2025-09-11",
+    "rcept_no": "20250911900462"
+  },
+  {
+    "stock_code": "028050",
+    "event_code": null,
+    "title": "단일판매ㆍ공급계약체결              ",
+    "trading_days_elapsed": 210,
+    "accepted_at": "2025-10-23",
+    "rcept_no": "20251023800271"
+  },
+  {
+    "stock_code": "121850",
+    "event_code": null,
+    "title": "[첨부추가]주요사항보고서(유상증자결정)",
+    "trading_days_elapsed": 248,
+    "accepted_at": "2025-09-15",
+    "rcept_no": "20250915000365"
+  },
+  {
+    "stock_code": "217590",
+    "event_code": null,
+    "title": "[첨부추가]증권신고서(지분증권)",
+    "trading_days_elapsed": 218,
+    "accepted_at": "2025-10-15",
+    "rcept_no": "20251015000386"
+  },
+  {
+    "stock_code": "491000",
+    "event_code": null,
+    "title": "[첨부추가]증권신고서(지분증권)",
+    "trading_days_elapsed": 213,
+    "accepted_at": "2025-10-20",
+    "rcept_no": "20251020000254"
+  },
+  {
+    "stock_code": "476830",
+    "event_code": null,
+    "title": "[첨부추가]증권신고서(지분증권)",
+    "trading_days_elapsed": 233,
+    "accepted_at": "2025-09-30",
+    "rcept_no": "20250930000758"
+  },
+  {
+    "stock_code": "478340",
+    "event_code": null,
+    "title": "[첨부추가]증권신고서(지분증권)",
+    "trading_days_elapsed": 237,
+    "accepted_at": "2025-09-26",
+    "rcept_no": "20250926000717"
+  },
+  {
+    "stock_code": "0015N0",
+    "event_code": null,
+    "title": "[첨부추가]증권신고서(지분증권)",
+    "trading_days_elapsed": 233,
+    "accepted_at": "2025-09-30",
+    "rcept_no": "20250930000546"
+  },
+  {
+    "stock_code": "490470",
+    "event_code": null,
+    "title": "[첨부추가]증권신고서(지분증권)",
+    "trading_days_elapsed": 216,
+    "accepted_at": "2025-10-17",
+    "rcept_no": "20251017000210"
+  },
+  {
+    "stock_code": "464490",
+    "event_code": null,
+    "title": "[첨부추가]증권신고서(지분증권)",
+    "trading_days_elapsed": 231,
+    "accepted_at": "2025-10-02",
+    "rcept_no": "20251002000396"
+  },
+  {
+    "stock_code": "261520",
+    "event_code": null,
+    "title": "[첨부추가]증권신고서(지분증권)",
+    "trading_days_elapsed": 219,
+    "accepted_at": "2025-10-14",
+    "rcept_no": "20251014000264"
+  },
+  {
+    "stock_code": "0015S0",
+    "event_code": null,
+    "title": "[첨부추가]증권신고서(지분증권)",
+    "trading_days_elapsed": 218,
+    "accepted_at": "2025-10-15",
+    "rcept_no": "20251015000268"
+  },
+  {
+    "stock_code": "066570",
+    "event_code": null,
+    "title": "[첨부추가]연결재무제표기준영업(잠정)실적(공정공시)              ",
+    "trading_days_elapsed": 220,
+    "accepted_at": "2025-10-13",
+    "rcept_no": "20251013800144"
+  },
+  {
+    "stock_code": "192520",
+    "event_code": null,
+    "title": "[첨부추가]이중상환청구권부채권등록신청서",
+    "trading_days_elapsed": 216,
+    "accepted_at": "2025-10-17",
+    "rcept_no": "20251017000525"
+  },
+  {
+    "stock_code": "373220",
+    "event_code": null,
+    "title": "[첨부추가]연결재무제표기준영업(잠정)실적(공정공시)              ",
+    "trading_days_elapsed": 220,
+    "accepted_at": "2025-10-13",
+    "rcept_no": "20251013800094"
+  }
+]

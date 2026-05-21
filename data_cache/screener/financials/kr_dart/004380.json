@@ -1,0 +1,95 @@
+{
+  "created_at": 1779375287.6393647,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 571.0,
+        "net_income": 11812259055.0,
+        "equity": 197391601953.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 804.0,
+        "net_income": 16648775430.0,
+        "equity": 210708900479.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 48.0,
+        "net_income": 985055837.0,
+        "equity": 202697984880.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 74.0,
+        "net_income": 1533340639.0,
+        "equity": 198828649589.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": -2174.0,
+        "net_income": -44996713410.0,
+        "equity": 157413151322.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 7.0,
+        "net_income": null,
+        "equity": 200803574573.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 28.0,
+        "net_income": null,
+        "equity": 201199802067.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 98.0,
+        "net_income": null,
+        "equity": 203108437214.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": -330.0,
+        "net_income": null,
+        "equity": 189979576473.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": -1307.0,
+        "net_income": null,
+        "equity": 162980120860.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": -355.0,
+        "net_income": null,
+        "equity": 155717779604.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": -202.0,
+        "net_income": null,
+        "equity": 152360585014.0
+      }
+    ],
+    "alerts": []
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "created_at": 1779370830.2537973,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 575.0,
+        "net_income": null,
+        "equity": 2476658008596.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 38.0,
+        "net_income": null,
+        "equity": 2369866116572.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 96.0,
+        "net_income": 58886775463.0,
+        "equity": 2508486580608.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": -659.0,
+        "net_income": -358595798106.0,
+        "equity": 2998738468366.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": -292.0,
+        "net_income": -197268294891.0,
+        "equity": 3912981016446.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 16.0,
+        "net_income": 10115853321.0,
+        "equity": 2557779072105.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": -64.0,
+        "net_income": -31203905718.0,
+        "equity": 2597231104568.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": -26.0,
+        "net_income": -19423523462.0,
+        "equity": 2537826465509.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": -35.0,
+        "net_income": -22591920596.0,
+        "equity": 3019529072840.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": -24.0,
+        "net_income": -15086203476.0,
+        "equity": 2887121163327.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 81.0,
+        "net_income": 55271565511.0,
+        "equity": 3055623365090.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 65.0,
+        "net_income": 67459688385.0,
+        "equity": 4115884994385.0
+      }
+    ],
+    "alerts": []
+  }
+}

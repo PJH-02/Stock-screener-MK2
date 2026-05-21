@@ -1,0 +1,95 @@
+{
+  "created_at": 1779370178.3571799,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": -99.0,
+        "net_income": -11924557643.0,
+        "equity": 50225636296.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": -69.0,
+        "net_income": -13001279643.0,
+        "equity": 40024015157.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": -165.0,
+        "net_income": -21026668952.0,
+        "equity": 22404630587.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 0.0,
+        "net_income": -14222283251.0,
+        "equity": 32642815777.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 0.0,
+        "net_income": -1895969813.0,
+        "equity": 43672331167.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": -79.0,
+        "net_income": -9047292576.0,
+        "equity": 12698844596.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": -10.0,
+        "net_income": -1547393126.0,
+        "equity": 33289902367.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": -46.0,
+        "net_income": -3076625165.0,
+        "equity": 29463702164.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 0.0,
+        "net_income": -1626239697.0,
+        "equity": 31016576080.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 0.0,
+        "net_income": 171225988.0,
+        "equity": 31187802068.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 0.0,
+        "net_income": -2674349999.0,
+        "equity": 41008287989.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 224.0,
+        "net_income": 19375367962.0,
+        "equity": 63047699129.0
+      }
+    ],
+    "alerts": []
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "created_at": 1779374544.0993655,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 7840.0,
+        "net_income": 33396172674.0,
+        "equity": 788679464058.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 12789.0,
+        "net_income": 49575574685.0,
+        "equity": 827063930862.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 14.0,
+        "net_income": 26857674151.0,
+        "equity": 826684106817.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": -57.0,
+        "net_income": 2470935000.0,
+        "equity": 862107307000.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": -664.0,
+        "net_income": -18803450000.0,
+        "equity": 808194985000.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 84.0,
+        "net_income": 9773834396.0,
+        "equity": 818296015749.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 34.0,
+        "net_income": 2306748437.0,
+        "equity": 817879283729.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 54.0,
+        "net_income": 8363092537.0,
+        "equity": 831252410136.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": -41.0,
+        "net_income": -2767032000.0,
+        "equity": 835385085000.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 7.0,
+        "net_income": 5282386000.0,
+        "equity": 844254334000.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": -230.0,
+        "net_income": -45836000.0,
+        "equity": 822485315000.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 156.0,
+        "net_income": 8021332000.0,
+        "equity": 824921849000.0
+      }
+    ],
+    "alerts": []
+  }
+}

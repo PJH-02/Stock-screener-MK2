@@ -1,0 +1,112 @@
+{
+  "created_at": 1779371560.7575254,
+  "data": {
+    "source": "SEC companyfacts",
+    "annual": [
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 3.05,
+        "net_income": 1614000000.0,
+        "equity": 7145000000.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 4.37,
+        "net_income": 2050000000.0,
+        "equity": 8464000000.0,
+        "roe": 26.266897302838103
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 4.56,
+        "net_income": 2154000000.0,
+        "equity": 10390000000.0,
+        "roe": 22.849262755913866
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2022,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.86
+      },
+      {
+        "year": 2022,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 1.07
+      },
+      {
+        "year": 2022,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 1.07
+      },
+      {
+        "year": 2023,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.42
+      },
+      {
+        "year": 2023,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.92
+      },
+      {
+        "year": 2023,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.82
+      },
+      {
+        "year": 2024,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.82
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.94
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 1.03
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 1.23
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 1.06
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.98
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.85
+      }
+    ],
+    "alerts": []
+  }
+}

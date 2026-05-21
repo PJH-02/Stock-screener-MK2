@@ -50,3 +50,6 @@ htmlcov/
 .cache/
 _site/
 docs_cache/
+trading/results/*.json
+trading/results/*.csv
+!trading/results/.gitkeep

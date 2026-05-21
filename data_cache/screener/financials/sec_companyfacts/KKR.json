@@ -1,0 +1,102 @@
+{
+  "created_at": 1779371630.4260502,
+  "data": {
+    "source": "SEC companyfacts",
+    "annual": [
+      {
+        "year": 2011,
+        "period": "FY",
+        "net_income": 572997000.0
+      },
+      {
+        "year": 2012,
+        "period": "FY",
+        "net_income": 1448340000.0
+      },
+      {
+        "year": 2013,
+        "period": "FY",
+        "net_income": 3280630000.0
+      },
+      {
+        "year": 2014,
+        "period": "FY",
+        "net_income": 466314000.0
+      },
+      {
+        "year": 2015,
+        "period": "FY",
+        "net_income": 1244050000.0
+      },
+      {
+        "year": 2016,
+        "period": "FY",
+        "net_income": 463007000.0
+      },
+      {
+        "year": 2017,
+        "period": "FY",
+        "net_income": 514686000.0
+      },
+      {
+        "year": 2018,
+        "period": "FY",
+        "net_income": -1070613000.0,
+        "equity": 24259968000.0
+      },
+      {
+        "year": 2019,
+        "period": "FY",
+        "net_income": 1314152000.0,
+        "equity": 30502374000.0,
+        "roe": 4.799473331509453
+      },
+      {
+        "year": 2020,
+        "period": "FY",
+        "net_income": 5117598000.0,
+        "equity": 40799916000.0,
+        "roe": 14.354652564454803
+      },
+      {
+        "year": 2021,
+        "period": "FY",
+        "net_income": 12295179000.0,
+        "equity": 58056729000.0,
+        "roe": 24.87476486785486
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "net_income": -1023528000.0,
+        "equity": 53506820000.0,
+        "roe": -1.8348788814525792
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "net_income": 5357086000.0,
+        "equity": 57763485000.0,
+        "roe": 9.628958957198869
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "net_income": 4906037000.0,
+        "equity": 60399515000.0,
+        "roe": 8.303846381693084
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "net_income": 6145412000.0,
+        "equity": 78921669000.0,
+        "roe": 8.821934789184679
+      }
+    ],
+    "quarterly": [],
+    "alerts": [
+      "No quarterly SEC EPS facts parsed."
+    ]
+  }
+}

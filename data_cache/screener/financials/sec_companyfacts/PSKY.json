@@ -1,0 +1,48 @@
+{
+  "created_at": 1779371708.253951,
+  "data": {
+    "source": "SEC companyfacts",
+    "annual": [
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": -0.53,
+        "net_income": -540000000.0,
+        "equity": 12887000000.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.23
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": -0.01
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.15
+      }
+    ],
+    "alerts": []
+  }
+}

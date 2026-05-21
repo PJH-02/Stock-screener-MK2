@@ -1,0 +1,95 @@
+{
+  "created_at": 1779374620.1897066,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 3055.0,
+        "net_income": 65898905421.0,
+        "equity": 346898827360.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 559.0,
+        "net_income": 12067999270.0,
+        "equity": 350660350544.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 789.0,
+        "net_income": 17420022071.0,
+        "equity": 359545628831.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 634.0,
+        "net_income": 14347893535.0,
+        "equity": 355985182032.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 789.0,
+        "net_income": 17103869485.0,
+        "equity": 365278585138.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 156.0,
+        "net_income": null,
+        "equity": 354651062432.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 212.0,
+        "net_income": null,
+        "equity": 359431085408.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 151.0,
+        "net_income": null,
+        "equity": 353174370834.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 176.0,
+        "net_income": null,
+        "equity": 351263055149.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 214.0,
+        "net_income": null,
+        "equity": 355886694476.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 192.0,
+        "net_income": null,
+        "equity": 360055527243.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 122.0,
+        "net_income": 2768516590.0,
+        "equity": 359432588777.0
+      }
+    ],
+    "alerts": []
+  }
+}

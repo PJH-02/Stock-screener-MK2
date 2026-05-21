@@ -1,0 +1,95 @@
+{
+  "created_at": 1779374538.7992826,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": -111.0,
+        "net_income": -2857371907.0,
+        "equity": 576991043541.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 304.0,
+        "net_income": 23233915898.0,
+        "equity": 598011882328.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 494.0,
+        "net_income": 37786380416.0,
+        "equity": 618192989958.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 381.0,
+        "net_income": 31896742000.0,
+        "equity": 681014742000.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 587.0,
+        "net_income": 45988040000.0,
+        "equity": 730205422000.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 194.0,
+        "net_income": 13205047257.0,
+        "equity": 623588389361.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": -50.0,
+        "net_income": -1078909443.0,
+        "equity": 664452139035.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 292.0,
+        "net_income": 12180005203.0,
+        "equity": 692049478299.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 194.0,
+        "net_income": 15475017000.0,
+        "equity": 689891542000.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": 111.0,
+        "net_income": 8243733000.0,
+        "equity": 689832926000.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": -81.0,
+        "net_income": -3660965000.0,
+        "equity": 688800109000.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 474.0,
+        "net_income": 34982160000.0,
+        "equity": 757787089000.0
+      }
+    ],
+    "alerts": []
+  }
+}

@@ -1,92 +1,76 @@
 {
-  "generated_at": "2026-05-21T14:33:42+09:00",
-  "last_updated": "2026-05-21T14:33:42+09:00",
+  "generated_at": "2026-05-21T22:31:11+09:00",
+  "last_updated": "2026-05-21T22:31:11+09:00",
+  "collection_scope": {
+    "KR": {
+      "universe": "Naver Finance KOSPI200 live table merged with bundled KR seed tickers for KOSDAQ coverage",
+      "prices": "Naver Finance daily OHLCV, 500 trading-day bars per ticker",
+      "financials": {
+        "source": "OpenDART finstate_all",
+        "annual_years": "2021-2025",
+        "quarterly_years": "2024-2026, published Q1/Q2/Q3 reports only"
+      }
+    },
+    "US": {
+      "universe": "Wikipedia S&P 500 + Nasdaq 100, de-duplicated by ticker",
+      "prices": "Yahoo chart daily OHLCV for the last 500 calendar days, with yfinance 2y fallback",
+      "financials": {
+        "source": "SEC companyfacts",
+        "coverage": "All available facts in the companyfacts payload; parser uses FY annual EPS/net income/equity and quarterly EPS facts"
+      }
+    },
+    "cache_policy": {
+      "prices": "18 hours",
+      "financials": "72 hours",
+      "dart_statements": "168 hours",
+      "universes": "latest successful live fetch is stored as fallback"
+    },
+    "rate_limit_policy": {
+      "http_retry_statuses": [
+        429,
+        500,
+        502,
+        503,
+        504
+      ],
+      "http_attempts": 3,
+      "min_request_intervals_seconds": {
+        "naver": 0.2,
+        "yahoo": 0.2,
+        "sec": 0.2,
+        "dart": 0.35
+      }
+    }
+  },
   "summary": {
     "markets": [
-      "KR"
+      "KR",
+      "US"
     ],
-    "total_universe": 5,
-    "total_evaluated": 5,
+    "total_universe": 726,
+    "total_evaluated": 726,
     "total_canslim_passed": 0,
     "total_turtle_signals": 0
   },
   "data_quality": {
     "alerts": [
       "KR: KOSDAQ150 live membership source is not configured; bundled seed tickers were merged.",
-      "KR: no CANSLIM pass results; see top_candidates and fail_reasons."
+      "KR: no CANSLIM pass results; see top_candidates and fail_reasons.",
+      "KR: financial data: No quarterly DART EPS records parsed. (2 securities)",
+      "US: SEC_USER_AGENT is not set; using a generic User-Agent.",
+      "US: no CANSLIM pass results; see top_candidates and fail_reasons.",
+      "US: financial data: No quarterly SEC EPS facts parsed. (9 securities)",
+      "US: financial data: No annual SEC financial facts parsed. (4 securities)"
     ]
   },
   "markets": {
     "KR": {
       "market_name": "Korea KOSPI200 + KOSDAQ150",
-      "universe_count": 5,
-      "evaluated_count": 5,
+      "universe_count": 210,
+      "evaluated_count": 210,
       "canslim_passed": [],
       "turtle_signals": [],
       "top_candidates": [
-        {
-          "Market": "KR",
-          "Ticker": "402340",
-          "CompanyName": "SK스퀘어",
-          "Sector": null,
-          "ClosePrice": 1170000.0,
-          "Currency": "KRW",
-          "CANSLIM_Score": 3,
-          "RS_Percentile": 90.0,
-          "Criteria": {
-            "C": {
-              "pass": true,
-              "details": {
-                "quarters": [
-                  {
-                    "year": 2026,
-                    "period": "Q1",
-                    "eps": 63324.0,
-                    "prior_year_eps": 12151.0,
-                    "yoy_growth": 421.14
-                  },
-                  {
-                    "year": 2025,
-                    "period": "Q3",
-                    "eps": 18745.0,
-                    "prior_year_eps": 8504.0,
-                    "yoy_growth": 120.43
-                  }
-                ]
-              }
-            },
-            "A": {
-              "pass": false,
-              "details": {
-                "reason": "Insufficient annual EPS history"
-              }
-            },
-            "N": {
-              "pass": true,
-              "details": {
-                "current_price": 1170000.0,
-                "52w_high": 1231000.0,
-                "price_ratio": 95.04
-              }
-            },
-            "S": {
-              "pass": false,
-              "details": {
-                "vol_5d_avg": 857551,
-                "vol_50d_avg": 696154,
-                "volume_ratio": 1.232,
-                "signal": "Normal"
-              }
-            },
-            "L": {
-              "pass": true,
-              "details": {
-                "rs_percentile": 90.0,
-                "rs_value": 95.86
-              }
-            }
-          }
-        },
         {
           "Market": "KR",
           "Ticker": "000660",
@@ -94,8 +78,8 @@
           "Sector": null,
           "ClosePrice": 1940000.0,
           "Currency": "KRW",
-          "CANSLIM_Score": 3,
-          "RS_Percentile": 70.0,
+          "CANSLIM_Score": 4,
+          "RS_Percentile": 97.86,
           "Criteria": {
             "C": {
               "pass": true,
@@ -140,17 +124,284 @@
             "S": {
               "pass": false,
               "details": {
-                "vol_5d_avg": 5637153,
-                "vol_50d_avg": 4623737,
-                "volume_ratio": 1.219,
+                "vol_5d_avg": 5820941,
+                "vol_50d_avg": 4642116,
+                "volume_ratio": 1.254,
                 "signal": "Normal"
               }
             },
             "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 97.86,
+                "rs_value": 90.38
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "009150",
+          "CompanyName": "삼성전기",
+          "Sector": null,
+          "ClosePrice": 1204000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 99.29,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 3310.0,
+                    "prior_year_eps": 1782.0,
+                    "yoy_growth": 85.75
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 2922.0,
+                    "prior_year_eps": 1537.0,
+                    "yoy_growth": 90.11
+                  }
+                ]
+              }
+            },
+            "A": {
               "pass": false,
               "details": {
-                "rs_percentile": 70.0,
-                "rs_value": 90.38
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": -10.21,
+                "latest_roe": null,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 1204000.0,
+                "52w_high": 1219000.0,
+                "price_ratio": 98.77
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 1325142,
+                "vol_50d_avg": 804285,
+                "volume_ratio": 1.648,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 99.29,
+                "rs_value": 116.76
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "011070",
+          "CompanyName": "LG이노텍",
+          "Sector": null,
+          "ClosePrice": 838000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 98.81,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 9683.0,
+                    "prior_year_eps": 3618.0,
+                    "yoy_growth": 167.63
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 5425.0,
+                    "prior_year_eps": 4437.0,
+                    "yoy_growth": 22.27
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": -29.57,
+                "latest_roe": 6.14,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 838000.0,
+                "52w_high": 848000.0,
+                "price_ratio": 98.82
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 375787,
+                "vol_50d_avg": 290270,
+                "volume_ratio": 1.295,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 98.81,
+                "rs_value": 103.47
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "402340",
+          "CompanyName": "SK스퀘어",
+          "Sector": null,
+          "ClosePrice": 1179000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 98.33,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 63324.0,
+                    "prior_year_eps": 12151.0,
+                    "yoy_growth": 421.14
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 18745.0,
+                    "prior_year_eps": 8504.0,
+                    "yoy_growth": 120.43
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "reason": "Insufficient annual EPS history"
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 1179000.0,
+                "52w_high": 1231000.0,
+                "price_ratio": 95.78
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 900024,
+                "vol_50d_avg": 700401,
+                "volume_ratio": 1.285,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 98.33,
+                "rs_value": 96.5
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "006260",
+          "CompanyName": "LS",
+          "Sector": null,
+          "ClosePrice": 521000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 95.95,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 5635.0,
+                    "prior_year_eps": 3180.0,
+                    "yoy_growth": 77.2
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 2380.0,
+                    "prior_year_eps": 1644.0,
+                    "yoy_growth": 44.77
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": -15.45,
+                "latest_roe": 6.66,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 521000.0,
+                "52w_high": 587000.0,
+                "price_ratio": 88.76
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 355831,
+                "vol_50d_avg": 221656,
+                "volume_ratio": 1.605,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 95.95,
+                "rs_value": 57.13
               }
             }
           }
@@ -160,10 +411,10 @@
           "Ticker": "005930",
           "CompanyName": "삼성전자",
           "Sector": null,
-          "ClosePrice": 298000.0,
+          "ClosePrice": 299500.0,
           "Currency": "KRW",
-          "CANSLIM_Score": 2,
-          "RS_Percentile": 50.0,
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 95.48,
           "Criteria": {
             "C": {
               "pass": true,
@@ -200,38 +451,38 @@
             "N": {
               "pass": true,
               "details": {
-                "current_price": 298000.0,
+                "current_price": 299500.0,
                 "52w_high": 299500.0,
-                "price_ratio": 99.5
+                "price_ratio": 100.0
               }
             },
             "S": {
               "pass": false,
               "details": {
-                "vol_5d_avg": 33405156,
-                "vol_50d_avg": 27854601,
-                "volume_ratio": 1.199,
+                "vol_5d_avg": 34838766,
+                "vol_50d_avg": 27997962,
+                "volume_ratio": 1.244,
                 "signal": "Normal"
               }
             },
             "L": {
-              "pass": false,
+              "pass": true,
               "details": {
-                "rs_percentile": 50.0,
-                "rs_value": 53.91
+                "rs_percentile": 95.48,
+                "rs_value": 54.22
               }
             }
           }
         },
         {
           "Market": "KR",
-          "Ticker": "005380",
-          "CompanyName": "현대차",
+          "Ticker": "066570",
+          "CompanyName": "LG전자",
           "Sector": null,
-          "ClosePrice": 668000.0,
+          "ClosePrice": 235000.0,
           "Currency": "KRW",
-          "CANSLIM_Score": 1,
-          "RS_Percentile": 30.0,
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 92.62,
           "Criteria": {
             "C": {
               "pass": false,
@@ -240,16 +491,16 @@
                   {
                     "year": 2026,
                     "period": "Q1",
-                    "eps": 8908.0,
-                    "prior_year_eps": 12103.0,
-                    "yoy_growth": -26.4
+                    "eps": 4545.0,
+                    "prior_year_eps": 4449.0,
+                    "yoy_growth": 2.16
                   },
                   {
                     "year": 2025,
                     "period": "Q3",
-                    "eps": 8696.0,
-                    "prior_year_eps": 11503.0,
-                    "yoy_growth": -24.4
+                    "eps": 2151.0,
+                    "prior_year_eps": 281.0,
+                    "yoy_growth": 665.48
                   }
                 ]
               }
@@ -259,8 +510,8 @@
               "details": {
                 "latest_year": 2025,
                 "base_year": 2022,
-                "eps_cagr_3y": 9.89,
-                "latest_roe": 8.36,
+                "eps_cagr_3y": -6.77,
+                "latest_roe": 4.54,
                 "eps_pass": false,
                 "roe_pass": false
               }
@@ -268,38 +519,379 @@
             "N": {
               "pass": true,
               "details": {
-                "current_price": 668000.0,
-                "52w_high": 774500.0,
-                "price_ratio": 86.25
+                "current_price": 235000.0,
+                "52w_high": 266500.0,
+                "price_ratio": 88.18
               }
             },
             "S": {
-              "pass": false,
+              "pass": true,
               "details": {
-                "vol_5d_avg": 2578998,
-                "vol_50d_avg": 1516437,
-                "volume_ratio": 1.701,
-                "signal": "Normal"
+                "vol_5d_avg": 4707590,
+                "vol_50d_avg": 1788441,
+                "volume_ratio": 2.632,
+                "signal": "High"
               }
             },
             "L": {
-              "pass": false,
+              "pass": true,
               "details": {
-                "rs_percentile": 30.0,
-                "rs_value": 36.63
+                "rs_percentile": 92.62,
+                "rs_value": 48.89
               }
             }
           }
         },
         {
           "Market": "KR",
-          "Ticker": "373220",
-          "CompanyName": "LG에너지솔루션",
+          "Ticker": "034730",
+          "CompanyName": "SK",
           "Sector": null,
-          "ClosePrice": 398500.0,
+          "ClosePrice": 576000.0,
           "Currency": "KRW",
-          "CANSLIM_Score": 0,
-          "RS_Percentile": 10.0,
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 91.67,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 61307.0,
+                    "prior_year_eps": 42572.0,
+                    "yoy_growth": 44.01
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 17249.0,
+                    "prior_year_eps": 9267.0,
+                    "yoy_growth": 86.13
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 14.11,
+                "latest_roe": 4.28,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 576000.0,
+                "52w_high": 600000.0,
+                "price_ratio": 96.0
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 286617,
+                "vol_50d_avg": 232657,
+                "volume_ratio": 1.232,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 91.67,
+                "rs_value": 47.74
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "039030",
+          "CompanyName": "EO Technics",
+          "Sector": "Technology",
+          "ClosePrice": 549000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 91.19,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 2534.0,
+                    "prior_year_eps": 1190.0,
+                    "yoy_growth": 112.94
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 1886.0,
+                    "prior_year_eps": 402.0,
+                    "yoy_growth": 369.15
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": -9.34,
+                "latest_roe": 8.92,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 549000.0,
+                "52w_high": 550000.0,
+                "price_ratio": 99.82
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 140375,
+                "vol_50d_avg": 105578,
+                "volume_ratio": 1.33,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 91.19,
+                "sector_rs_percentile": 50.0,
+                "rs_value": 47.73
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "004170",
+          "CompanyName": "신세계",
+          "Sector": null,
+          "ClosePrice": 578000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 90.24,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 13710.0,
+                    "prior_year_eps": 6563.0,
+                    "yoy_growth": 108.9
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 4014.0,
+                    "prior_year_eps": 2332.0,
+                    "yoy_growth": 72.13
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": -66.23,
+                "latest_roe": 1.0,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 578000.0,
+                "52w_high": 599000.0,
+                "price_ratio": 96.49
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 106066,
+                "vol_50d_avg": 69073,
+                "volume_ratio": 1.536,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 90.24,
+                "rs_value": 45.19
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "079550",
+          "CompanyName": "LIG디펜스앤에어로스페이스",
+          "Sector": null,
+          "ClosePrice": 862000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 89.29,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 6405.0,
+                    "prior_year_eps": 3864.0,
+                    "yoy_growth": 65.76
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 2715.0,
+                    "prior_year_eps": 1972.0,
+                    "yoy_growth": 37.68
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": true,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 27.18,
+                "latest_roe": 17.5,
+                "eps_pass": true,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": false,
+              "details": {
+                "current_price": 862000.0,
+                "52w_high": 1118000.0,
+                "price_ratio": 77.1
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 241816,
+                "vol_50d_avg": 402354,
+                "volume_ratio": 0.601,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 89.29,
+                "rs_value": 40.16
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "267260",
+          "CompanyName": "HD현대일렉트릭",
+          "Sector": null,
+          "ClosePrice": 1136000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 85.0,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 5781.0,
+                    "prior_year_eps": 4281.0,
+                    "yoy_growth": 35.04
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 5309.0,
+                    "prior_year_eps": 3247.0,
+                    "yoy_growth": 63.5
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": true,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 65.21,
+                "latest_roe": 41.34,
+                "eps_pass": true,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": false,
+              "details": {
+                "current_price": 1136000.0,
+                "52w_high": 1430000.0,
+                "price_ratio": 79.44
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 181859,
+                "vol_50d_avg": 157872,
+                "volume_ratio": 1.152,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 85.0,
+                "rs_value": 33.52
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "012330",
+          "CompanyName": "현대모비스",
+          "Sector": null,
+          "ClosePrice": 670000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 84.52,
           "Criteria": {
             "C": {
               "pass": false,
@@ -308,16 +900,351 @@
                   {
                     "year": 2026,
                     "period": "Q1",
-                    "eps": -2889.0,
-                    "prior_year_eps": -623.0,
-                    "yoy_growth": -363.72
+                    "eps": 9885.0,
+                    "prior_year_eps": 11422.0,
+                    "yoy_growth": -13.46
                   },
                   {
                     "year": 2025,
                     "period": "Q3",
-                    "eps": 1056.0,
-                    "prior_year_eps": 569.0,
-                    "yoy_growth": 85.59
+                    "eps": 10421.0,
+                    "prior_year_eps": 10217.0,
+                    "yoy_growth": 2.0
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 14.58,
+                "latest_roe": 7.69,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 670000.0,
+                "52w_high": 687000.0,
+                "price_ratio": 97.53
+              }
+            },
+            "S": {
+              "pass": true,
+              "details": {
+                "vol_5d_avg": 1033103,
+                "vol_50d_avg": 454724,
+                "volume_ratio": 2.272,
+                "signal": "High"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 84.52,
+                "rs_value": 33.16
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "298040",
+          "CompanyName": "효성중공업",
+          "Sector": null,
+          "ClosePrice": 3929000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 2,
+          "RS_Percentile": 97.38,
+          "Criteria": {
+            "C": {
+              "pass": false,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 9370.0,
+                    "prior_year_eps": 10971.0,
+                    "yoy_growth": -14.59
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 16131.0,
+                    "prior_year_eps": 7938.0,
+                    "yoy_growth": 103.21
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": true,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 270.59,
+                "latest_roe": 22.13,
+                "eps_pass": true,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": false,
+              "details": {
+                "current_price": 3929000.0,
+                "52w_high": 4742000.0,
+                "price_ratio": 82.86
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 61258,
+                "vol_50d_avg": 53294,
+                "volume_ratio": 1.149,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 97.38,
+                "rs_value": 69.06
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "010120",
+          "CompanyName": "LS ELECTRIC",
+          "Sector": null,
+          "ClosePrice": 271500.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 2,
+          "RS_Percentile": 96.9,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 4052.0,
+                    "prior_year_eps": 2353.0,
+                    "yoy_growth": 72.21
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 2236.0,
+                    "prior_year_eps": 1133.0,
+                    "yoy_growth": 97.35
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 46.36,
+                "latest_roe": 14.1,
+                "eps_pass": true,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": false,
+              "details": {
+                "current_price": 271500.0,
+                "52w_high": 335000.0,
+                "price_ratio": 81.04
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 1464784,
+                "vol_50d_avg": 1119586,
+                "volume_ratio": 1.308,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 96.9,
+                "rs_value": 67.92
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "062040",
+          "CompanyName": "산일전기",
+          "Sector": null,
+          "ClosePrice": 276000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 2,
+          "RS_Percentile": 96.43,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 1476.0,
+                    "prior_year_eps": 1006.0,
+                    "yoy_growth": 46.72
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 1212.0,
+                    "prior_year_eps": 795.0,
+                    "yoy_growth": 52.45
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "reason": "Insufficient annual EPS history"
+              }
+            },
+            "N": {
+              "pass": false,
+              "details": {
+                "current_price": 276000.0,
+                "52w_high": 341000.0,
+                "price_ratio": 80.94
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 462809,
+                "vol_50d_avg": 612635,
+                "volume_ratio": 0.755,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 96.43,
+                "rs_value": 61.64
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "307950",
+          "CompanyName": "현대오토에버",
+          "Sector": null,
+          "ClosePrice": 629000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 2,
+          "RS_Percentile": 95.0,
+          "Criteria": {
+            "C": {
+              "pass": false,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 653.0,
+                    "prior_year_eps": 714.0,
+                    "yoy_growth": -8.54
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 1886.0,
+                    "prior_year_eps": 1591.0,
+                    "yoy_growth": 18.54
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 17.01,
+                "latest_roe": null,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 629000.0,
+                "52w_high": 723000.0,
+                "price_ratio": 87.0
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 270224,
+                "vol_50d_avg": 188267,
+                "volume_ratio": 1.435,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 95.0,
+                "rs_value": 53.71
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "000150",
+          "CompanyName": "두산",
+          "Sector": null,
+          "ClosePrice": 1600000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 2,
+          "RS_Percentile": 94.05,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 2191.0,
+                    "prior_year_eps": 1327.0,
+                    "yoy_growth": 65.11
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 6789.0,
+                    "prior_year_eps": -4962.0,
+                    "yoy_growth": 236.82
                   }
                 ]
               }
@@ -328,7 +1255,7 @@
                 "latest_year": 2025,
                 "base_year": 2022,
                 "eps_cagr_3y": null,
-                "latest_roe": 0.27,
+                "latest_roe": 2.07,
                 "eps_pass": false,
                 "roe_pass": false
               }
@@ -336,25 +1263,156 @@
             "N": {
               "pass": false,
               "details": {
-                "current_price": 398500.0,
-                "52w_high": 527000.0,
-                "price_ratio": 75.62
+                "current_price": 1600000.0,
+                "52w_high": 1900000.0,
+                "price_ratio": 84.21
               }
             },
             "S": {
               "pass": false,
               "details": {
-                "vol_5d_avg": 432718,
-                "vol_50d_avg": 431576,
-                "volume_ratio": 1.003,
+                "vol_5d_avg": 99955,
+                "vol_50d_avg": 82944,
+                "volume_ratio": 1.205,
                 "signal": "Normal"
               }
             },
             "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 94.05,
+                "rs_value": 51.46
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "032830",
+          "CompanyName": "삼성생명",
+          "Sector": null,
+          "ClosePrice": 355000.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 2,
+          "RS_Percentile": 93.57,
+          "Criteria": {
+            "C": {
               "pass": false,
               "details": {
-                "rs_percentile": 10.0,
-                "rs_value": 5.02
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 6702.0,
+                    "prior_year_eps": 3538.0,
+                    "yoy_growth": 89.43
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 4026.0,
+                    "prior_year_eps": 3751.0,
+                    "yoy_growth": 7.33
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "reason": "Insufficient annual EPS history"
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 355000.0,
+                "52w_high": 359000.0,
+                "price_ratio": 98.89
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 507966,
+                "vol_50d_avg": 415753,
+                "volume_ratio": 1.222,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 93.57,
+                "rs_value": 50.71
+              }
+            }
+          }
+        },
+        {
+          "Market": "KR",
+          "Ticker": "042700",
+          "CompanyName": "한미반도체",
+          "Sector": null,
+          "ClosePrice": 332500.0,
+          "Currency": "KRW",
+          "CANSLIM_Score": 2,
+          "RS_Percentile": 92.14,
+          "Criteria": {
+            "C": {
+              "pass": false,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 200.0,
+                    "prior_year_eps": 575.0,
+                    "yoy_growth": -65.22
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 690.0,
+                    "prior_year_eps": 399.0,
+                    "yoy_growth": 72.93
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": true,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 33.78,
+                "latest_roe": 34.76,
+                "eps_pass": true,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": false,
+              "details": {
+                "current_price": 332500.0,
+                "52w_high": 426000.0,
+                "price_ratio": 78.05
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 1457751,
+                "vol_50d_avg": 1030401,
+                "volume_ratio": 1.415,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 92.14,
+                "rs_value": 48.68
               }
             }
           }
@@ -362,20 +1420,1415 @@
       ],
       "fail_reasons": {
         "by_criterion": {
-          "C": 2,
-          "A": 4,
-          "N": 1,
-          "S": 5,
-          "L": 4
+          "C": 142,
+          "A": 192,
+          "N": 169,
+          "S": 195,
+          "L": 168
         },
         "top_details": {
-          "A: Insufficient annual EPS history": 1
+          "A: Insufficient annual EPS history": 31,
+          "C: Fewer than two comparable quarterly EPS records": 2,
+          "C: Insufficient quarterly EPS data": 2
         }
       },
       "data_quality": {
         "alerts": [
           "KR: KOSDAQ150 live membership source is not configured; bundled seed tickers were merged.",
-          "KR: no CANSLIM pass results; see top_candidates and fail_reasons."
+          "KR: no CANSLIM pass results; see top_candidates and fail_reasons.",
+          "KR: financial data: No quarterly DART EPS records parsed. (2 securities)"
+        ]
+      }
+    },
+    "US": {
+      "market_name": "US S&P 500 + Nasdaq 100",
+      "universe_count": 516,
+      "evaluated_count": 516,
+      "canslim_passed": [],
+      "turtle_signals": [],
+      "top_candidates": [
+        {
+          "Market": "US",
+          "Ticker": "FIX",
+          "CompanyName": "Comfort Systems USA",
+          "Sector": "Industrials",
+          "ClosePrice": 1857.65,
+          "Currency": "USD",
+          "CANSLIM_Score": 4,
+          "RS_Percentile": 96.99,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 10.52,
+                    "prior_year_eps": 4.77,
+                    "yoy_growth": 120.55
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 8.26,
+                    "prior_year_eps": 4.1,
+                    "yoy_growth": 101.46
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": true,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 61.72,
+                "latest_roe": 49.24,
+                "eps_pass": true,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 1857.65,
+                "52w_high": 2073.99,
+                "price_ratio": 89.57
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 421820,
+                "vol_50d_avg": 402044,
+                "volume_ratio": 1.049,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 96.99,
+                "sector_rs_percentile": 99.26,
+                "rs_value": 39.81
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "VRT",
+          "CompanyName": "Vertiv",
+          "Sector": "Industrials",
+          "ClosePrice": 325.775,
+          "Currency": "USD",
+          "CANSLIM_Score": 4,
+          "RS_Percentile": 96.02,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 1.02,
+                    "prior_year_eps": 0.43,
+                    "yoy_growth": 137.21
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 1.04,
+                    "prior_year_eps": 0.47,
+                    "yoy_growth": 121.28
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": true,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 159.38,
+                "latest_roe": 41.81,
+                "eps_pass": true,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 325.775,
+                "52w_high": 379.935,
+                "price_ratio": 85.74
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 5770778,
+                "vol_50d_avg": 7434279,
+                "volume_ratio": 0.776,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 96.02,
+                "sector_rs_percentile": 97.79,
+                "rs_value": 32.33
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "GOOGL",
+          "CompanyName": "Alphabet Inc. (Class A)",
+          "Sector": null,
+          "ClosePrice": 385.7753,
+          "Currency": "USD",
+          "CANSLIM_Score": 4,
+          "RS_Percentile": 92.91,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 5.17,
+                    "prior_year_eps": 2.84,
+                    "yoy_growth": 82.04
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 2.89,
+                    "prior_year_eps": 2.14,
+                    "yoy_growth": 35.05
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": true,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 33.46,
+                "latest_roe": 35.7,
+                "eps_pass": true,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 385.7753,
+                "52w_high": 408.61,
+                "price_ratio": 94.41
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 24096149,
+                "vol_50d_avg": 27637412,
+                "volume_ratio": 0.872,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 92.91,
+                "rs_value": 23.17
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "GOOG",
+          "CompanyName": "Alphabet Inc. (Class C)",
+          "Sector": null,
+          "ClosePrice": 381.92,
+          "Currency": "USD",
+          "CANSLIM_Score": 4,
+          "RS_Percentile": 92.33,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 5.17,
+                    "prior_year_eps": 2.84,
+                    "yoy_growth": 82.04
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 2.89,
+                    "prior_year_eps": 2.14,
+                    "yoy_growth": 35.05
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": true,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 33.46,
+                "latest_roe": 35.7,
+                "eps_pass": true,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 381.92,
+                "52w_high": 404.47,
+                "price_ratio": 94.42
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 15587863,
+                "vol_50d_avg": 18626798,
+                "volume_ratio": 0.837,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 92.33,
+                "rs_value": 22.46
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "TRGP",
+          "CompanyName": "Targa Resources",
+          "Sector": "Energy",
+          "ClosePrice": 273.105,
+          "Currency": "USD",
+          "CANSLIM_Score": 4,
+          "RS_Percentile": 88.25,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 2.22,
+                    "prior_year_eps": 0.91,
+                    "yoy_growth": 143.96
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 2.21,
+                    "prior_year_eps": 1.76,
+                    "yoy_growth": 25.57
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": true,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2021,
+                "eps_cagr_3y": 21.19,
+                "latest_roe": 51.38,
+                "eps_pass": true,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 273.105,
+                "52w_high": 280.0,
+                "price_ratio": 97.54
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 1044719,
+                "vol_50d_avg": 1311399,
+                "volume_ratio": 0.797,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 88.25,
+                "sector_rs_percentile": 76.32,
+                "rs_value": 15.54
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "CBOE",
+          "CompanyName": "Cboe Global Markets",
+          "Sector": "Financials",
+          "ClosePrice": 359.76,
+          "Currency": "USD",
+          "CANSLIM_Score": 4,
+          "RS_Percentile": 87.28,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 3.67,
+                    "prior_year_eps": 2.38,
+                    "yoy_growth": 54.2
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 2.86,
+                    "prior_year_eps": 2.08,
+                    "yoy_growth": 37.5
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": true,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 68.15,
+                "latest_roe": 23.36,
+                "eps_pass": true,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 359.76,
+                "52w_high": 371.18,
+                "price_ratio": 96.92
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 748950,
+                "vol_50d_avg": 863875,
+                "volume_ratio": 0.867,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 87.28,
+                "sector_rs_percentile": 96.67,
+                "rs_value": 15.18
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "NVDA",
+          "CompanyName": "Nvidia",
+          "Sector": null,
+          "ClosePrice": 222.46,
+          "Currency": "USD",
+          "CANSLIM_Score": 4,
+          "RS_Percentile": 84.95,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q3",
+                    "eps": 3.16,
+                    "prior_year_eps": 1.31,
+                    "yoy_growth": 141.22
+                  },
+                  {
+                    "year": 2026,
+                    "period": "Q2",
+                    "eps": 1.85,
+                    "prior_year_eps": 1.08,
+                    "yoy_growth": 71.3
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": true,
+              "details": {
+                "latest_year": 2026,
+                "base_year": 2023,
+                "eps_cagr_3y": 40.97,
+                "latest_roe": 101.49,
+                "eps_pass": true,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 222.46,
+                "52w_high": 236.54,
+                "price_ratio": 94.05
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 139831512,
+                "vol_50d_avg": 158261631,
+                "volume_ratio": 0.884,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 84.95,
+                "rs_value": 14.15
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "SNDK",
+          "CompanyName": "Sandisk",
+          "Sector": null,
+          "ClosePrice": 1459.9097,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 99.9,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q3",
+                    "eps": 30.82,
+                    "prior_year_eps": 0.77,
+                    "yoy_growth": 3902.6
+                  },
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 24.43,
+                    "prior_year_eps": -13.33,
+                    "yoy_growth": 283.27
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "reason": "Insufficient annual EPS history"
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 1459.9097,
+                "52w_high": 1600.0,
+                "price_ratio": 91.24
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 10492290,
+                "vol_50d_avg": 16479895,
+                "volume_ratio": 0.637,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 99.9,
+                "rs_value": 171.14
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "WDC",
+          "CompanyName": "Western Digital",
+          "Sector": null,
+          "ClosePrice": 478.38,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 99.32,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q3",
+                    "eps": 17.8,
+                    "prior_year_eps": 3.34,
+                    "yoy_growth": 432.93
+                  },
+                  {
+                    "year": 2026,
+                    "period": "Q2",
+                    "eps": 8.6,
+                    "prior_year_eps": 0.78,
+                    "yoy_growth": 1002.56
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": -45.47,
+                "latest_roe": 3.5,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 478.38,
+                "52w_high": 525.15,
+                "price_ratio": 91.09
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 5588627,
+                "vol_50d_avg": 7977460,
+                "volume_ratio": 0.701,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 99.32,
+                "rs_value": 76.84
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "STX",
+          "CompanyName": "Seagate Technology",
+          "Sector": null,
+          "ClosePrice": 801.41,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 99.13,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q3",
+                    "eps": 8.71,
+                    "prior_year_eps": 2.58,
+                    "yoy_growth": 237.6
+                  },
+                  {
+                    "year": 2026,
+                    "period": "Q2",
+                    "eps": 5.31,
+                    "prior_year_eps": 1.58,
+                    "yoy_growth": 236.08
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2027,
+                "base_year": 2024,
+                "eps_cagr_3y": 63.01,
+                "latest_roe": -151.13,
+                "eps_pass": true,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 801.41,
+                "52w_high": 841.31,
+                "price_ratio": 95.26
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 2844338,
+                "vol_50d_avg": 4072055,
+                "volume_ratio": 0.699,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 99.13,
+                "rs_value": 73.59
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "MU",
+          "CompanyName": "Micron Technology",
+          "Sector": null,
+          "ClosePrice": 754.39,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 98.93,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q2",
+                    "eps": 16.91,
+                    "prior_year_eps": 1.69,
+                    "yoy_growth": 900.59
+                  },
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 12.25,
+                    "prior_year_eps": 1.42,
+                    "yoy_growth": 762.68
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": -0.69,
+                "latest_roe": 17.2,
+                "eps_pass": false,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 754.39,
+                "52w_high": 818.67,
+                "price_ratio": 92.15
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 45460424,
+                "vol_50d_avg": 48341212,
+                "volume_ratio": 0.94,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 98.93,
+                "rs_value": 73.51
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "AMD",
+          "CompanyName": "Advanced Micro Devices",
+          "Sector": null,
+          "ClosePrice": 444.27,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 98.74,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 0.85,
+                    "prior_year_eps": 0.44,
+                    "yoy_growth": 93.18
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 0.76,
+                    "prior_year_eps": 0.48,
+                    "yoy_growth": 58.33
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 46.45,
+                "latest_roe": 7.19,
+                "eps_pass": true,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 444.27,
+                "52w_high": 469.22,
+                "price_ratio": 94.68
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 27308150,
+                "vol_50d_avg": 38526447,
+                "volume_ratio": 0.709,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 98.74,
+                "rs_value": 65.92
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "CIEN",
+          "CompanyName": "Ciena",
+          "Sector": "Information Technology",
+          "ClosePrice": 565.49,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 98.54,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2025,
+                    "period": "Q4",
+                    "eps": 1.06,
+                    "prior_year_eps": 0.31,
+                    "yoy_growth": 241.94
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 0.73,
+                    "prior_year_eps": 0.1,
+                    "yoy_growth": 630.0
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": -4.85,
+                "latest_roe": 4.45,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 565.49,
+                "52w_high": 598.84,
+                "price_ratio": 94.43
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 1885197,
+                "vol_50d_avg": 2587853,
+                "volume_ratio": 0.728,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 98.54,
+                "sector_rs_percentile": 96.05,
+                "rs_value": 65.57
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "ARM",
+          "CompanyName": "Arm Holdings",
+          "Sector": null,
+          "ClosePrice": 279.595,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 97.96,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q3",
+                    "eps": 0.56,
+                    "prior_year_eps": 0.22,
+                    "yoy_growth": 154.55
+                  },
+                  {
+                    "year": 2026,
+                    "period": "Q2",
+                    "eps": 0.35,
+                    "prior_year_eps": 0.12,
+                    "yoy_growth": 191.67
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "reason": "Insufficient annual EPS history"
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 279.595,
+                "52w_high": 284.489,
+                "price_ratio": 98.28
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 10823128,
+                "vol_50d_avg": 9575424,
+                "volume_ratio": 1.13,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 97.96,
+                "rs_value": 49.21
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "COHR",
+          "CompanyName": "Coherent Corp.",
+          "Sector": "Information Technology",
+          "ClosePrice": 365.48,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 97.77,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q3",
+                    "eps": 3.09,
+                    "prior_year_eps": 1.24,
+                    "yoy_growth": 149.19
+                  },
+                  {
+                    "year": 2026,
+                    "period": "Q2",
+                    "eps": 2.09,
+                    "prior_year_eps": 0.46,
+                    "yoy_growth": 354.35
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": null,
+                "latest_roe": 0.52,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 365.48,
+                "52w_high": 413.0,
+                "price_ratio": 88.49
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 4862547,
+                "vol_50d_avg": 7243522,
+                "volume_ratio": 0.671,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 97.77,
+                "sector_rs_percentile": 93.42,
+                "rs_value": 47.13
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "DELL",
+          "CompanyName": "Dell Technologies",
+          "Sector": "Information Technology",
+          "ClosePrice": 245.05,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 97.38,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q3",
+                    "eps": 5.41,
+                    "prior_year_eps": 2.31,
+                    "yoy_growth": 134.2
+                  },
+                  {
+                    "year": 2026,
+                    "period": "Q2",
+                    "eps": 3.11,
+                    "prior_year_eps": 1.72,
+                    "yoy_growth": 80.81
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2026,
+                "base_year": 2021,
+                "eps_cagr_3y": 15.0,
+                "latest_roe": -307.8,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 245.05,
+                "52w_high": 263.99,
+                "price_ratio": 92.83
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 3797109,
+                "vol_50d_avg": 7254106,
+                "volume_ratio": 0.523,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 97.38,
+                "sector_rs_percentile": 90.79,
+                "rs_value": 44.91
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "GLW",
+          "CompanyName": "Corning Inc.",
+          "Sector": "Information Technology",
+          "ClosePrice": 185.27,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 96.8,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 0.43,
+                    "prior_year_eps": 0.18,
+                    "yoy_growth": 138.89
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 0.5,
+                    "prior_year_eps": -0.14,
+                    "yoy_growth": 457.14
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": 6.23,
+                "latest_roe": 14.9,
+                "eps_pass": false,
+                "roe_pass": false
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 185.27,
+                "52w_high": 211.79,
+                "price_ratio": 87.48
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 12155620,
+                "vol_50d_avg": 12641130,
+                "volume_ratio": 0.962,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 96.8,
+                "sector_rs_percentile": 85.53,
+                "rs_value": 36.69
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "LRCX",
+          "CompanyName": "Lam Research",
+          "Sector": null,
+          "ClosePrice": 296.2436,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 96.6,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q3",
+                    "eps": 3.97,
+                    "prior_year_eps": 1.24,
+                    "yoy_growth": 220.16
+                  },
+                  {
+                    "year": 2026,
+                    "period": "Q2",
+                    "eps": 2.51,
+                    "prior_year_eps": 0.93,
+                    "yoy_growth": 169.89
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": -49.78,
+                "latest_roe": 58.24,
+                "eps_pass": false,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 296.2436,
+                "52w_high": 302.0,
+                "price_ratio": 98.09
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 7153049,
+                "vol_50d_avg": 9563740,
+                "volume_ratio": 0.748,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 96.6,
+                "rs_value": 34.89
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "APA",
+          "CompanyName": "APA Corporation",
+          "Sector": "Energy",
+          "ClosePrice": 39.7,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 95.44,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q1",
+                    "eps": 1.26,
+                    "prior_year_eps": 0.96,
+                    "yoy_growth": 31.25
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q3",
+                    "eps": 0.57,
+                    "prior_year_eps": -0.6,
+                    "yoy_growth": 195.0
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": -28.79,
+                "latest_roe": 25.32,
+                "eps_pass": false,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 39.7,
+                "52w_high": 45.66,
+                "price_ratio": 86.95
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 6104971,
+                "vol_50d_avg": 8399649,
+                "volume_ratio": 0.727,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 95.44,
+                "sector_rs_percentile": 97.37,
+                "rs_value": 27.96
+              }
+            }
+          }
+        },
+        {
+          "Market": "US",
+          "Ticker": "PANW",
+          "CompanyName": "Palo Alto Networks",
+          "Sector": null,
+          "ClosePrice": 250.62,
+          "Currency": "USD",
+          "CANSLIM_Score": 3,
+          "RS_Percentile": 95.24,
+          "Criteria": {
+            "C": {
+              "pass": true,
+              "details": {
+                "quarters": [
+                  {
+                    "year": 2026,
+                    "period": "Q2",
+                    "eps": 1.1,
+                    "prior_year_eps": 0.41,
+                    "yoy_growth": 168.29
+                  },
+                  {
+                    "year": 2025,
+                    "period": "Q4",
+                    "eps": 0.61,
+                    "prior_year_eps": 0.41,
+                    "yoy_growth": 48.78
+                  }
+                ]
+              }
+            },
+            "A": {
+              "pass": false,
+              "details": {
+                "latest_year": 2025,
+                "base_year": 2022,
+                "eps_cagr_3y": null,
+                "latest_roe": 17.45,
+                "eps_pass": false,
+                "roe_pass": true
+              }
+            },
+            "N": {
+              "pass": true,
+              "details": {
+                "current_price": 250.62,
+                "52w_high": 251.4999,
+                "price_ratio": 99.65
+              }
+            },
+            "S": {
+              "pass": false,
+              "details": {
+                "vol_5d_avg": 8172108,
+                "vol_50d_avg": 7781158,
+                "volume_ratio": 1.05,
+                "signal": "Normal"
+              }
+            },
+            "L": {
+              "pass": true,
+              "details": {
+                "rs_percentile": 95.24,
+                "rs_value": 26.71
+              }
+            }
+          }
+        }
+      ],
+      "fail_reasons": {
+        "by_criterion": {
+          "C": 350,
+          "A": 458,
+          "N": 254,
+          "S": 515,
+          "L": 413
+        },
+        "top_details": {
+          "A: Insufficient annual EPS history": 27,
+          "C: Insufficient quarterly EPS data": 11,
+          "C: Fewer than two comparable quarterly EPS records": 1,
+          "N: Insufficient price history": 1,
+          "L: RS percentile unavailable": 1
+        }
+      },
+      "data_quality": {
+        "alerts": [
+          "US: SEC_USER_AGENT is not set; using a generic User-Agent.",
+          "US: no CANSLIM pass results; see top_candidates and fail_reasons.",
+          "US: financial data: No quarterly SEC EPS facts parsed. (9 securities)",
+          "US: financial data: No annual SEC financial facts parsed. (4 securities)"
         ]
       }
     }

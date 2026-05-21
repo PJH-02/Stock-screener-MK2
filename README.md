@@ -19,6 +19,24 @@ If a live universe source fails, the screener uses the last local cache. If no c
 
 The accounting checks use normalized annual and quarterly records. ROE is calculated from net income and average shareholder equity rather than by searching for a precomputed ROE row.
 
+## Collection Scope
+
+- Korea universe: live KOSPI 200 constituents from Naver Finance plus bundled KR seed tickers for KOSDAQ coverage. The latest successful live universe is cached as fallback.
+- Korea prices: 500 daily OHLCV bars per ticker from Naver Finance.
+- Korea accounting: OpenDART `finstate_all` annual statements for the last five completed fiscal years, plus published Q1/Q2/Q3 reports from the current year and the prior two years.
+- United States universe: S&P 500 and Nasdaq 100 constituents from Wikipedia, de-duplicated by ticker.
+- United States prices: Yahoo chart daily OHLCV for the last 500 calendar days, with `yfinance` 2-year download as fallback.
+- United States accounting: SEC `companyfacts`; the parser uses FY annual EPS, net income, shareholder equity, and quarterly EPS facts from the available companyfacts payload.
+
+## Rate Limit Protection
+
+- HTTP calls retry up to 3 attempts on 429, 500, 502, 503, and 504 with exponential backoff and jitter.
+- Provider calls are paced in-process: Naver 0.2s, Yahoo 0.2s, SEC 0.2s, DART 0.35s minimum interval.
+- Price data is cached for 18 hours.
+- Parsed financials are cached for 72 hours.
+- Raw DART statement responses are cached for 168 hours.
+- GitHub Actions restores and saves `.cache/screener` through `actions/cache` so repeated scheduled runs reuse prior successful downloads.
+
 ## Screening Logic
 
 - C: latest two comparable quarters have EPS YoY growth of at least 20%
@@ -53,6 +71,35 @@ Results are written to:
 
 - `public/results/screener_results.json` for GitHub Pages
 - `results/screener_results.json` for backwards compatibility
+
+## Trading Strategy
+
+The `trading/` package adds a Korean long-only strategy layer on top of the screener logic.
+
+- Universe: KOSPI/KOSDAQ common and preferred shares from Kiwoom REST, excluding ETF/ETN/ELW/SPAC/REIT/suspended-like instruments.
+- Preferred shares: traded as separate tickers, while DART disclosure and financial scores map to the representative common share when the common share can be inferred.
+- Ranking: full universe macro+DART disclosure score first, then CANSLIM C/A/N/S/L and Turtle S1/S2 buy filtering.
+- Portfolio: KRW 100,000,000 initial capital, long-only, 15% max position weight, 0.015% fee per buy/sell.
+- Exits: close-based +24% half take-profit once, close-based -8% stop, or Turtle S1/S2 exit; orders are assumed filled next trading day at open.
+- Allocation tests: `equal_weight` and `inverse_rank_weight`; winner is selected by CAGR first.
+- v1 output is order proposal only. It does not send live or mock orders.
+
+Required environment variables for live Kiwoom data:
+
+- `KIWOOM_APP_KEY`
+- `KIWOOM_SECRET_KEY`
+- `KIWOOM_ENV=prod` or `mock`
+- `DART_API_KEY`
+
+Trading commands:
+
+```bash
+python -m trading.cli rank --as-of 2026-05-21 --limit 20
+python -m trading.cli orders --as-of 2026-05-21 --limit 20
+python -m trading.cli backtest --start 2025-05-21 --end 2026-05-21 --limit 20
+```
+
+Generated files are written under `trading/results/` and ignored by git except for `.gitkeep`.
 
 ## GitHub Setup
 

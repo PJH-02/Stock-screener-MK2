@@ -1,0 +1,95 @@
+{
+  "created_at": 1779375251.7915657,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": -331.0,
+        "net_income": -12264951851.0,
+        "equity": 92373527769.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": -18.0,
+        "net_income": -532290342.0,
+        "equity": 112058795117.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 1.0,
+        "net_income": 72801575.0,
+        "equity": 108625698683.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 66.0,
+        "net_income": 2382264256.0,
+        "equity": 110305490991.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 94.0,
+        "net_income": 3051036268.0,
+        "equity": 166325243257.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": 151.0,
+        "net_income": 5529334297.0,
+        "equity": 114259505424.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 22.0,
+        "net_income": 728977311.0,
+        "equity": 113913722436.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": -59.0,
+        "net_income": -2272477810.0,
+        "equity": 111982826942.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": 94.0,
+        "net_income": 3450160438.0,
+        "equity": 113343927207.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": -222.0,
+        "net_income": -8479600977.0,
+        "equity": 104661717508.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 12.0,
+        "net_income": 439524128.0,
+        "equity": 105323937402.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 105.0,
+        "net_income": 3823763826.0,
+        "equity": 169602603654.0
+      }
+    ],
+    "alerts": []
+  }
+}

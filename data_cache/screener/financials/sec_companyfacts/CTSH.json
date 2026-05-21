@@ -1,0 +1,536 @@
+{
+  "created_at": 1779371481.3537917,
+  "data": {
+    "source": "SEC companyfacts",
+    "annual": [
+      {
+        "year": 2009,
+        "period": "FY",
+        "eps": 1.82,
+        "net_income": 534963000.0,
+        "equity": 2653177000.0
+      },
+      {
+        "year": 2010,
+        "period": "FY",
+        "eps": 0.68,
+        "net_income": 206166000.0,
+        "equity": 3584431000.0,
+        "roe": 6.610418609184802
+      },
+      {
+        "year": 2011,
+        "period": "FY",
+        "eps": 0.79,
+        "net_income": 240127000.0,
+        "equity": 3952886000.0,
+        "roe": 6.371683717163548
+      },
+      {
+        "year": 2012,
+        "period": "FY",
+        "eps": 0.93,
+        "net_income": 278779000.0,
+        "equity": 4854383000.0,
+        "roe": 6.330657096995675
+      },
+      {
+        "year": 2013,
+        "period": "FY",
+        "eps": 1.07,
+        "net_income": 324332000.0,
+        "equity": 6135791000.0,
+        "roe": 5.902217744687209
+      },
+      {
+        "year": 2014,
+        "period": "FY",
+        "eps": 0.6,
+        "net_income": 362857000.0,
+        "equity": 7740218000.0,
+        "roe": 5.2299908424677435
+      },
+      {
+        "year": 2015,
+        "period": "FY",
+        "eps": 0.7,
+        "net_income": 423400000.0,
+        "equity": 9278100000.0,
+        "roe": 4.975814883703548
+      },
+      {
+        "year": 2016,
+        "period": "FY",
+        "eps": 0.69,
+        "net_income": 416000000.0,
+        "equity": 10728000000.0,
+        "roe": 4.158731586866006
+      },
+      {
+        "year": 2017,
+        "period": "FY",
+        "eps": -0.03,
+        "net_income": -18000000.0,
+        "equity": 10669000000.0,
+        "roe": -0.16824788521755385
+      },
+      {
+        "year": 2018,
+        "period": "FY",
+        "eps": 1.12,
+        "net_income": 648000000.0,
+        "equity": 11424000000.0,
+        "roe": 5.86611143801204
+      },
+      {
+        "year": 2019,
+        "period": "FY",
+        "eps": 0.72,
+        "net_income": 395000000.0,
+        "equity": 11022000000.0,
+        "roe": 3.5195580504321486
+      },
+      {
+        "year": 2020,
+        "period": "FY",
+        "eps": 2.58,
+        "net_income": 1392000000.0,
+        "equity": 10836000000.0,
+        "roe": 12.736755421356024
+      },
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 4.06,
+        "net_income": 2137000000.0,
+        "equity": 11991000000.0,
+        "roe": 18.723441538528935
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": 4.42,
+        "net_income": 2290000000.0,
+        "equity": 12309000000.0,
+        "roe": 18.847736625514404
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": 4.21,
+        "net_income": 2126000000.0,
+        "equity": 13227000000.0,
+        "roe": 16.651002506265662
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 4.52,
+        "net_income": 2240000000.0,
+        "equity": 14408000000.0,
+        "roe": 16.211326216754117
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": 4.57,
+        "net_income": 2230000000.0,
+        "equity": 15015000000.0,
+        "roe": 15.158209563946572
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2008,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.36
+      },
+      {
+        "year": 2008,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.39
+      },
+      {
+        "year": 2009,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.39
+      },
+      {
+        "year": 2009,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.48
+      },
+      {
+        "year": 2009,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.47
+      },
+      {
+        "year": 2009,
+        "period": "Q4",
+        "quarter": 4,
+        "eps": 0.49
+      },
+      {
+        "year": 2010,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.51
+      },
+      {
+        "year": 2010,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.57
+      },
+      {
+        "year": 2010,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.68
+      },
+      {
+        "year": 2010,
+        "period": "Q4",
+        "quarter": 4,
+        "eps": 0.68
+      },
+      {
+        "year": 2011,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.69
+      },
+      {
+        "year": 2011,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.68
+      },
+      {
+        "year": 2011,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.75
+      },
+      {
+        "year": 2011,
+        "period": "Q4",
+        "quarter": 4,
+        "eps": 0.79
+      },
+      {
+        "year": 2012,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.8
+      },
+      {
+        "year": 2012,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.83
+      },
+      {
+        "year": 2012,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.93
+      },
+      {
+        "year": 2012,
+        "period": "Q4",
+        "quarter": 4,
+        "eps": 0.93
+      },
+      {
+        "year": 2013,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.47
+      },
+      {
+        "year": 2013,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.5
+      },
+      {
+        "year": 2013,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.53
+      },
+      {
+        "year": 2013,
+        "period": "Q4",
+        "quarter": 4,
+        "eps": 0.54
+      },
+      {
+        "year": 2014,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.57
+      },
+      {
+        "year": 2014,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.61
+      },
+      {
+        "year": 2014,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.58
+      },
+      {
+        "year": 2014,
+        "period": "Q4",
+        "quarter": 4,
+        "eps": 0.6
+      },
+      {
+        "year": 2015,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.63
+      },
+      {
+        "year": 2015,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.69
+      },
+      {
+        "year": 2015,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.65
+      },
+      {
+        "year": 2015,
+        "period": "Q4",
+        "quarter": 4,
+        "eps": 0.7
+      },
+      {
+        "year": 2016,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.73
+      },
+      {
+        "year": 2016,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.42
+      },
+      {
+        "year": 2016,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.73
+      },
+      {
+        "year": 2016,
+        "period": "Q4",
+        "quarter": 4,
+        "eps": 0.69
+      },
+      {
+        "year": 2017,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.92
+      },
+      {
+        "year": 2017,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.8
+      },
+      {
+        "year": 2017,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.84
+      },
+      {
+        "year": 2017,
+        "period": "Q4",
+        "quarter": 4,
+        "eps": -0.03
+      },
+      {
+        "year": 2018,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.89
+      },
+      {
+        "year": 2018,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.78
+      },
+      {
+        "year": 2018,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.82
+      },
+      {
+        "year": 2018,
+        "period": "Q4",
+        "quarter": 4,
+        "eps": 1.12
+      },
+      {
+        "year": 2019,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.77
+      },
+      {
+        "year": 2019,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.9
+      },
+      {
+        "year": 2019,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.9
+      },
+      {
+        "year": 2019,
+        "period": "Q4",
+        "quarter": 4,
+        "eps": 0.72
+      },
+      {
+        "year": 2020,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.67
+      },
+      {
+        "year": 2020,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.67
+      },
+      {
+        "year": 2020,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.64
+      },
+      {
+        "year": 2021,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 0.95
+      },
+      {
+        "year": 2021,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.97
+      },
+      {
+        "year": 2021,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 1.04
+      },
+      {
+        "year": 2022,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 1.07
+      },
+      {
+        "year": 2022,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 1.11
+      },
+      {
+        "year": 2022,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 1.22
+      },
+      {
+        "year": 2023,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 1.14
+      },
+      {
+        "year": 2023,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 0.92
+      },
+      {
+        "year": 2023,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 1.04
+      },
+      {
+        "year": 2024,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 1.1
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 1.14
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 1.17
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 1.34
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "quarter": 2,
+        "eps": 1.31
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "quarter": 3,
+        "eps": 0.56
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "quarter": 1,
+        "eps": 1.39
+      }
+    ],
+    "alerts": []
+  }
+}

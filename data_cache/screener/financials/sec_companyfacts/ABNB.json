@@ -1,0 +1,46 @@
+{
+  "created_at": 1779371388.2574468,
+  "data": {
+    "source": "SEC companyfacts",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "net_income": -352034000.0,
+        "equity": 4775713000.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "net_income": 1893000000.0,
+        "equity": 5560000000.0,
+        "roe": 36.6302740797853
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "net_income": 4792000000.0,
+        "equity": 8165000000.0,
+        "roe": 69.8287795992714
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "net_income": 2648000000.0,
+        "equity": 8412000000.0,
+        "roe": 31.947879592206068
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "net_income": 2511000000.0,
+        "equity": 8199000000.0,
+        "roe": 30.232978147011018
+      }
+    ],
+    "quarterly": [],
+    "alerts": [
+      "No quarterly SEC EPS facts parsed."
+    ]
+  }
+}

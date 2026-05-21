@@ -1,0 +1,95 @@
+{
+  "created_at": 1779371418.2318795,
+  "data": {
+    "source": "SEC companyfacts",
+    "annual": [
+      {
+        "year": 2014,
+        "period": "FY",
+        "net_income": 157354000.0,
+        "equity": 5697935000.0
+      },
+      {
+        "year": 2015,
+        "period": "FY",
+        "net_income": 6247000.0,
+        "equity": 968406000.0,
+        "roe": 0.18741915542574256
+      },
+      {
+        "year": 2016,
+        "period": "FY",
+        "net_income": 95316000.0,
+        "equity": 1377262000.0,
+        "roe": 8.126981311933317
+      },
+      {
+        "year": 2017,
+        "period": "FY",
+        "net_income": 131536000.0,
+        "equity": 1460292000.0,
+        "roe": 9.271083475415798
+      },
+      {
+        "year": 2018,
+        "period": "FY",
+        "net_income": 16337000.0,
+        "equity": 1394341000.0,
+        "roe": 1.1445954698905252
+      },
+      {
+        "year": 2019,
+        "period": "FY",
+        "net_income": 84475000.0,
+        "equity": 1858598000.0,
+        "roe": 5.193764777021641
+      },
+      {
+        "year": 2020,
+        "period": "FY",
+        "net_income": 324485000.0,
+        "equity": 2471774000.0,
+        "roe": 14.986472293835265
+      },
+      {
+        "year": 2021,
+        "period": "FY",
+        "net_income": 918305000.0,
+        "equity": 3814426000.0,
+        "roe": 29.216537812987177
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "net_income": 438915000.0,
+        "equity": 3798618000.0,
+        "roe": 11.530604578142462
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "net_income": 885796000.0,
+        "equity": 4474313000.0,
+        "roe": 21.414320994578585
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "net_income": 814963000.0,
+        "equity": 6824190000.0,
+        "roe": 14.42603502428596
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "net_income": 834454000.0,
+        "equity": 8676092000.0,
+        "roe": 10.76695249802552
+      }
+    ],
+    "quarterly": [],
+    "alerts": [
+      "No quarterly SEC EPS facts parsed."
+    ]
+  }
+}

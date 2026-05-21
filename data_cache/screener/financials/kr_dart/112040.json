@@ -1,0 +1,95 @@
+{
+  "created_at": 1779371356.8818066,
+  "data": {
+    "source": "DART",
+    "annual": [
+      {
+        "year": 2021,
+        "period": "FY",
+        "eps": 9060.0,
+        "net_income": 308090969487.0,
+        "equity": 643700927035.0
+      },
+      {
+        "year": 2022,
+        "period": "FY",
+        "eps": -5569.0,
+        "net_income": -185755765680.0,
+        "equity": 534328321556.0
+      },
+      {
+        "year": 2023,
+        "period": "FY",
+        "eps": -5992.0,
+        "net_income": -200451082594.0,
+        "equity": 400778285482.0
+      },
+      {
+        "year": 2024,
+        "period": "FY",
+        "eps": 4406.0,
+        "net_income": 181624881770.0,
+        "equity": 831897265007.0
+      },
+      {
+        "year": 2025,
+        "period": "FY",
+        "eps": -665.0,
+        "net_income": -27040443605.0,
+        "equity": 812655850470.0
+      }
+    ],
+    "quarterly": [
+      {
+        "year": 2024,
+        "period": "Q1",
+        "eps": -1661.0,
+        "net_income": -55737796300.0,
+        "equity": 349263615092.0
+      },
+      {
+        "year": 2024,
+        "period": "Q2",
+        "eps": 122.0,
+        "net_income": 4113762946.0,
+        "equity": 344115475801.0
+      },
+      {
+        "year": 2024,
+        "period": "Q3",
+        "eps": 895.0,
+        "net_income": null,
+        "equity": 380876336720.0
+      },
+      {
+        "year": 2025,
+        "period": "Q1",
+        "eps": -708.0,
+        "net_income": null,
+        "equity": 833478801545.0
+      },
+      {
+        "year": 2025,
+        "period": "Q2",
+        "eps": -859.0,
+        "net_income": null,
+        "equity": 809763554350.0
+      },
+      {
+        "year": 2025,
+        "period": "Q3",
+        "eps": 1834.0,
+        "net_income": null,
+        "equity": 858433953651.0
+      },
+      {
+        "year": 2026,
+        "period": "Q1",
+        "eps": 647.0,
+        "net_income": null,
+        "equity": 799630658107.0
+      }
+    ],
+    "alerts": []
+  }
+}
