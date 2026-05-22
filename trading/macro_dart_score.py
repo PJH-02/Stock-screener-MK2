@@ -11,7 +11,7 @@ from datetime import date, datetime, time as datetime_time
 from pathlib import Path
 from typing import Any, Mapping
 
-from trading.config import DEFAULT_CONFIG, ROOT_DIR
+from trading.config import DATA_CACHE_DIR, DEFAULT_CONFIG, ROOT_DIR
 from trading.kiwoom_client import load_env_file
 from trading.kiwoom_client import TradingSecurity
 
@@ -176,6 +176,9 @@ def resolve_macro_snapshot_path(as_of: str | None = None) -> Path | None:
         if path.exists() and _macro_snapshot_is_available(path, as_of):
             return path
     macro_root = resolve_macro_root()
+    cached_snapshot = _resolve_cached_macro_snapshot_path(as_of)
+    if cached_snapshot is not None:
+        return cached_snapshot
     if macro_root is None:
         return None
     if as_of is not None:
@@ -198,6 +201,33 @@ def resolve_macro_snapshot_path(as_of: str | None = None) -> Path | None:
         snapshot_path = Path(str(snapshot_text))
         if snapshot_path.exists():
             return snapshot_path
+    return None
+
+
+def _resolve_cached_macro_snapshot_path(as_of: str | None = None) -> Path | None:
+    cache_root = DATA_CACHE_DIR / "macro_snapshots"
+    if not cache_root.exists():
+        return None
+    if as_of is not None:
+        candidates = sorted(cache_root.glob("*/snapshot.json"))
+        available = [path for path in candidates if _macro_snapshot_is_available(path, as_of)]
+        if available:
+            return max(available, key=_macro_snapshot_published_at)
+        return None
+    latest_path = cache_root / "latest.json"
+    if latest_path.exists():
+        try:
+            latest = json.loads(latest_path.read_text(encoding="utf-8"))
+            run_id = str(latest.get("run_id") or "").strip()
+            if run_id:
+                path = cache_root / run_id / "snapshot.json"
+                if path.exists():
+                    return path
+        except Exception:
+            pass
+    candidates = sorted(cache_root.glob("*/snapshot.json"))
+    if candidates:
+        return max(candidates, key=_macro_snapshot_published_at)
     return None
 
 

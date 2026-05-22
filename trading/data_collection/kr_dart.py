@@ -19,30 +19,42 @@ if str(SRC_DIR) not in sys.path:
 
 from market_providers import KRProvider  # noqa: E402
 from trading.config import DATA_CACHE_DIR, DEFAULT_CONFIG  # noqa: E402
-from trading.kiwoom_client import TradingSecurity  # noqa: E402
+from trading.kiwoom_client import TradingSecurity, load_env_file  # noqa: E402
+
+
+load_env_file(ROOT_DIR / ".env")
 
 
 class DARTDisclosureClient:
     """Fetch whole-market Korean disclosures from OpenDART list API."""
 
-    def __init__(self, *, api_key: str | None = None, cache_dir: Path = DATA_CACHE_DIR / "dart", max_pages: int | None = None) -> None:
+    def __init__(
+        self,
+        *,
+        api_key: str | None = None,
+        cache_dir: Path = DATA_CACHE_DIR / "dart",
+        max_pages: int | None = None,
+        allow_partial: bool | None = None,
+    ) -> None:
         self.api_key = api_key or os.getenv(DEFAULT_CONFIG.dart_api_key_env)
         self.cache_dir = cache_dir
-        self.max_pages = max_pages or int(os.getenv("TRADING_DART_DISCLOSURE_MAX_PAGES", "20"))
+        self.max_pages = max_pages if max_pages is not None else _optional_positive_int(os.getenv("TRADING_DART_DISCLOSURE_MAX_PAGES"))
+        self.allow_partial = _env_flag("TRADING_DART_ALLOW_PARTIAL_DISCLOSURES") if allow_partial is None else allow_partial
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
     def fetch_disclosures(self, *, start_date: str, end_date: str, as_of: str) -> list[dict[str, Any]]:
         if not self.api_key:
             raise RuntimeError("DART_API_KEY is required for DART disclosure scoring.")
-        cache_path = self.cache_dir / f"dart_disclosures_{start_date}_{end_date}_p{self.max_pages}.json"
-        if cache_path.exists():
+        cache_suffix = f"p{self.max_pages}" if self.max_pages is not None else "all"
+        cache_path = self.cache_dir / f"dart_disclosures_{start_date}_{end_date}_{cache_suffix}.json"
+        if cache_path.exists() and (self.max_pages is None or self.allow_partial):
             return json.loads(cache_path.read_text(encoding="utf-8"))
 
         as_of_date = date.fromisoformat(as_of)
         rows: list[dict[str, Any]] = []
         page_no = 1
         total_pages = 1
-        while page_no <= total_pages and page_no <= self.max_pages:
+        while page_no <= total_pages:
             response = requests.get(
                 "https://opendart.fss.or.kr/api/list.json",
                 params={
@@ -62,6 +74,16 @@ class DARTDisclosureClient:
                 break
             if status != "000":
                 raise RuntimeError(f"DART list API error {status}: {payload.get('message')}")
+            total_pages = max(int(payload.get("total_page") or 1), 1)
+            if self.max_pages is not None and total_pages > self.max_pages and not self.allow_partial:
+                raise RuntimeError(
+                    "DART disclosure fetch would be partial: "
+                    f"{start_date}~{end_date} has {total_pages} pages, "
+                    f"but TRADING_DART_DISCLOSURE_MAX_PAGES={self.max_pages}. "
+                    "Unset the cap to fetch all pages, or set "
+                    "TRADING_DART_ALLOW_PARTIAL_DISCLOSURES=1 for an intentional smoke run."
+                )
+
             for item in payload.get("list", []):
                 stock_code = str(item.get("stock_code") or "").zfill(6)
                 if not stock_code.strip("0"):
@@ -79,8 +101,9 @@ class DARTDisclosureClient:
                         "rcept_no": item.get("rcept_no"),
                     }
                 )
-            total_pages = max(int(payload.get("total_page") or 1), 1)
             page_no += 1
+            if self.max_pages is not None and page_no > self.max_pages:
+                break
             time.sleep(0.2)
 
         cache_path.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -215,3 +238,16 @@ def _financial_available_date(record: Mapping[str, Any]) -> date:
     if period == "Q4":
         return date(year + 1, 4, 1)
     return date(year + 1, 4, 1)
+
+
+def _optional_positive_int(value: str | None) -> int | None:
+    if value is None or not value.strip():
+        return None
+    parsed = int(value)
+    if parsed <= 0:
+        return None
+    return parsed
+
+
+def _env_flag(name: str) -> bool:
+    return str(os.getenv(name) or "").strip().lower() in {"1", "true", "yes", "y", "on"}

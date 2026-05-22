@@ -77,6 +77,23 @@ def parse_number(value: Any) -> float | None:
         return None
 
 
+def parse_signed_number(value: Any) -> float | None:
+    if value is None:
+        return None
+    text = str(value).strip().replace(",", "")
+    if not text or text.lower() in {"nan", "none", "-"}:
+        return None
+    multiplier = 1.0
+    if text.startswith("(") and text.endswith(")"):
+        multiplier = -1.0
+        text = text[1:-1]
+    text = text.replace("+", "")
+    try:
+        return float(text) * multiplier
+    except ValueError:
+        return None
+
+
 def first_value(payload: Mapping[str, Any], *keys: str) -> Any:
     lowered = {str(key).lower(): value for key, value in payload.items()}
     for key in keys:
@@ -221,6 +238,67 @@ def normalize_daily_chart_response(payload: Mapping[str, Any] | list[Any]) -> pd
     if df.empty:
         return pd.DataFrame(columns=["date", "open", "high", "low", "close", "volume"])
     df = df.dropna(subset=["date"]).sort_values("date").reset_index(drop=True)
+    df["date"] = df["date"].dt.strftime("%Y-%m-%d")
+    return df
+
+
+def normalize_institutional_flow_response(payload: Mapping[str, Any] | list[Any]) -> pd.DataFrame:
+    rows: list[dict[str, Any]] = []
+    for item in flatten_record_lists(payload):
+        date = first_value(item, "date", "dt", "trading_date", "bizdate", "stck_bsop_date")
+        institutional = parse_signed_number(
+            first_value(
+                item,
+                "institutional_net_buy",
+                "institution_net_buy",
+                "organ_pure_buy_quantity",
+                "organPureBuyQuant",
+                "orgn",
+                "orgn_netbuy",
+                "institution",
+                "inst",
+            )
+        )
+        foreigner = parse_signed_number(
+            first_value(
+                item,
+                "foreigner_net_buy",
+                "foreigner_pure_buy_quantity",
+                "foreignerPureBuyQuant",
+                "frgnr_invsr",
+                "foreign",
+            )
+        )
+        individual = parse_signed_number(
+            first_value(
+                item,
+                "individual_net_buy",
+                "individual_pure_buy_quantity",
+                "individualPureBuyQuant",
+                "ind_invsr",
+                "individual",
+            )
+        )
+        close = parse_number(first_value(item, "close", "closePrice", "cur_prc", "close_price"))
+        volume = parse_number(first_value(item, "volume", "accumulatedTradingVolume", "acc_trde_qty", "trde_qty"))
+        if date is None or institutional is None:
+            continue
+        rows.append(
+            {
+                "date": pd.to_datetime(str(date), format="%Y%m%d", errors="coerce"),
+                "institutional_net_buy": institutional,
+                "foreigner_net_buy": foreigner,
+                "individual_net_buy": individual,
+                "close": close,
+                "volume": volume,
+            }
+        )
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return pd.DataFrame(
+            columns=["date", "institutional_net_buy", "foreigner_net_buy", "individual_net_buy", "close", "volume"]
+        )
+    df = df.dropna(subset=["date"]).sort_values("date").drop_duplicates(subset=["date"], keep="last").reset_index(drop=True)
     df["date"] = df["date"].dt.strftime("%Y-%m-%d")
     return df
 
@@ -378,3 +456,50 @@ class KiwoomRESTClient:
         if df.empty:
             raise RuntimeError(f"Kiwoom daily chart response contained no OHLCV rows for {ticker}.")
         return df.tail(bars).reset_index(drop=True)
+
+    def load_institutional_flow(self, ticker: str, *, end_date: str, bars: int) -> pd.DataFrame:
+        api_id = os.getenv("KIWOOM_INSTITUTION_FLOW_API_ID", "ka10059")
+        path = os.getenv("KIWOOM_INSTITUTION_FLOW_PATH", "/api/dostk/chart")
+        body = {
+            "dt": end_date.replace("-", ""),
+            "base_dt": end_date.replace("-", ""),
+            "stk_cd": ticker,
+            "amt_qty_tp": os.getenv("KIWOOM_INSTITUTION_FLOW_AMOUNT_QTY_TYPE", "2"),
+            "trde_tp": os.getenv("KIWOOM_INSTITUTION_FLOW_TRADE_TYPE", "0"),
+            "unit_tp": os.getenv("KIWOOM_INSTITUTION_FLOW_UNIT_TYPE", "1"),
+        }
+        body.update(_json_env_mapping("KIWOOM_INSTITUTION_FLOW_EXTRA_PARAMS"))
+        pages = self.post_api(api_id, path, body, max_pages=int(os.getenv("KIWOOM_INSTITUTION_FLOW_MAX_PAGES", "80")))
+        df = normalize_institutional_flow_response(pages)
+        if df.empty:
+            raise RuntimeError(f"Kiwoom institutional flow response contained no rows for {ticker}.")
+        return df.tail(bars).reset_index(drop=True)
+
+    def load_index_ohlcv(self, market: str, *, end_date: str, bars: int) -> pd.DataFrame:
+        api_id = os.getenv("KIWOOM_INDEX_DAILY_API_ID", "ka20006")
+        path = os.getenv("KIWOOM_INDEX_DAILY_PATH", "/api/dostk/chart")
+        normalized_market = normalize_market(market)
+        index_code = "001" if normalized_market == "KOSPI" else "101"
+        body = {
+            "mrkt_tp": "0" if normalized_market == "KOSPI" else "1",
+            "inds_cd": index_code,
+            "stk_cd": index_code,
+            "base_dt": end_date.replace("-", ""),
+            "dt": end_date.replace("-", ""),
+        }
+        body.update(_json_env_mapping("KIWOOM_INDEX_DAILY_EXTRA_PARAMS"))
+        pages = self.post_api(api_id, path, body, max_pages=int(os.getenv("KIWOOM_INDEX_DAILY_MAX_PAGES", "20")))
+        df = normalize_daily_chart_response(pages)
+        if df.empty:
+            raise RuntimeError(f"Kiwoom index daily chart response contained no OHLCV rows for {normalized_market}.")
+        return df.tail(bars).reset_index(drop=True)
+
+
+def _json_env_mapping(name: str) -> dict[str, Any]:
+    raw = os.getenv(name)
+    if not raw:
+        return {}
+    payload = json.loads(raw)
+    if not isinstance(payload, dict):
+        raise ValueError(f"{name} must be a JSON object.")
+    return dict(payload)

@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from canslim import EarningsAnalyzer, LeadershipAnalyzer, NewnessAnalyzer, SupplyAnalyzer
+from canslim import EarningsAnalyzer, InstitutionalAnalyzer, LeadershipAnalyzer, MarketAnalyzer, SupplyAnalyzer
 from market_providers import (
     DART_PACER,
     DART_STATEMENT_CACHE_TTL_HOURS,
@@ -35,15 +35,16 @@ logger = setup_logger("main")
 class StockScreener:
     """Coordinates market providers, CANSLIM criteria, and Turtle signals."""
 
-    required_criteria = ("C", "A", "N", "S", "L")
+    required_criteria = ("C", "A", "S", "L", "I", "M")
 
     def __init__(self, markets: list[str], limit: int | None = None):
         self.markets = markets
         self.limit = limit
         self.earnings_analyzer = EarningsAnalyzer()
-        self.newness_analyzer = NewnessAnalyzer()
         self.supply_analyzer = SupplyAnalyzer()
         self.leadership_analyzer = LeadershipAnalyzer()
+        self.institutional_analyzer = InstitutionalAnalyzer()
+        self.market_analyzer = MarketAnalyzer()
         self.turtle_generator = TurtleSignalGenerator()
 
     def run(self) -> dict[str, Any]:
@@ -110,6 +111,15 @@ class StockScreener:
                     "sec": SEC_PACER.min_interval_seconds,
                     "dart": DART_PACER.min_interval_seconds,
                 },
+            },
+            "canslim_policy": {
+                "C": "Latest comparable quarterly EPS YoY growth >= 25%",
+                "A": "3-year annual EPS CAGR >= 25%",
+                "N": "Disabled",
+                "S": "Latest volume >= 2x prior 10-day average volume",
+                "L": "RS percentile >= 90 and close within 25% of 52-week high",
+                "I": "Institutional net buying improved over the last six months",
+                "M": "Relevant index close > 20-day moving average for each of the latest five sessions",
             },
         }
 
@@ -217,14 +227,26 @@ class StockScreener:
 
         c_pass, c_details = self.earnings_analyzer.check_c_criterion(security.ticker, financial_data)
         a_pass, a_details = self.earnings_analyzer.check_a_criterion(security.ticker, financial_data)
-        n_pass, n_details = self.newness_analyzer.check_n_criterion(security.ticker, record["ohlcv"])
         s_pass, s_details = self.supply_analyzer.check_s_criterion(security.ticker, record["ohlcv"])
+        try:
+            institutional_flow = provider.get_institutional_flow(security)
+            i_pass, i_details = self.institutional_analyzer.check_i_criterion(security.ticker, institutional_flow)
+        except Exception as exc:
+            i_pass, i_details = False, {"reason": f"Institutional flow data unavailable: {exc}"}
+            record["data_alerts"].append("institutional flow data unavailable")
+        try:
+            market_index_ohlcv = provider.get_market_index_ohlcv(security)
+            m_pass, m_details = self.market_analyzer.check_m_criterion(security.ticker, market_index_ohlcv)
+        except Exception as exc:
+            m_pass, m_details = False, {"reason": f"Market index data unavailable: {exc}"}
+            record["data_alerts"].append("market index data unavailable")
         rs_value = self.leadership_analyzer.calculate_rs_rating(security.ticker, record["ohlcv"])
 
         record["criteria"]["C"] = {"pass": c_pass, "details": c_details}
         record["criteria"]["A"] = {"pass": a_pass, "details": a_details}
-        record["criteria"]["N"] = {"pass": n_pass, "details": n_details}
         record["criteria"]["S"] = {"pass": s_pass, "details": s_details}
+        record["criteria"]["I"] = {"pass": i_pass, "details": i_details}
+        record["criteria"]["M"] = {"pass": m_pass, "details": m_details}
         record["rs_value"] = rs_value
         return record
 
@@ -241,7 +263,7 @@ class StockScreener:
             sector_percentile = self.percentile_rank(sector_values.get(str(record.get("sector")), []), rs_value)
             record["rs_percentile"] = percentile
             record["sector_rs_percentile"] = sector_percentile
-            l_pass, l_details = self.leadership_analyzer.check_l_criterion(record["ticker"], percentile)
+            l_pass, l_details = self.leadership_analyzer.check_l_criterion(record["ticker"], percentile, record.get("ohlcv"))
             if sector_percentile is not None:
                 l_details["sector_rs_percentile"] = round(float(sector_percentile), 2)
             if rs_value is not None:

@@ -17,10 +17,10 @@ class EarningsAnalyzer:
 
     def check_c_criterion(self, ticker: str, financial_data: dict[str, Any] | None):
         """
-        C - Current Earnings: EPS YoY growth >= 20% for the latest two comparable quarters.
+        C - Current Earnings: EPS YoY growth >= 25% for the latest comparable quarter.
         """
         quarters = self._records(financial_data, "quarterly")
-        if len(quarters) < 4:
+        if len(quarters) < 2:
             return False, {"reason": "Insufficient quarterly EPS data"}
 
         by_period: dict[tuple[int, str], dict[str, Any]] = {}
@@ -50,18 +50,18 @@ class EarningsAnalyzer:
                     "yoy_growth": round(growth, 2),
                 }
             )
-            if len(comparable) == 2:
+            if len(comparable) == 1:
                 break
 
-        if len(comparable) < 2:
-            return False, {"reason": "Fewer than two comparable quarterly EPS records", "quarters": comparable}
+        if not comparable:
+            return False, {"reason": "No comparable quarterly EPS records", "quarters": comparable}
 
-        passes = all(item["yoy_growth"] >= 20 for item in comparable)
+        passes = comparable[0]["yoy_growth"] >= 25
         return passes, {"quarters": comparable}
 
     def check_a_criterion(self, ticker: str, financial_data: dict[str, Any] | None):
         """
-        A - Annual Earnings: 3-year EPS CAGR >= 20% and latest annual ROE >= 15%.
+        A - Annual Earnings: 3-year EPS CAGR >= 25%.
         """
         annual = self._records(financial_data, "annual")
         annual = sorted(annual, key=lambda item: item.get("year", 0), reverse=True)
@@ -74,19 +74,13 @@ class EarningsAnalyzer:
         base = next((record for record in eps_records if record.get("year") == target_year), eps_records[3])
         years = max(1, int(latest.get("year", 0)) - int(base.get("year", 0)))
         eps_cagr = self._cagr(latest.get("eps"), base.get("eps"), years)
-        eps_pass = eps_cagr is not None and eps_cagr >= 20
+        eps_pass = eps_cagr is not None and eps_cagr >= 25
 
-        latest_roe = self._latest_roe(annual)
-        roe_pass = latest_roe is not None and latest_roe >= 15
-        passes = bool(eps_pass and roe_pass)
-
-        return passes, {
+        return bool(eps_pass), {
             "latest_year": latest.get("year"),
             "base_year": base.get("year"),
             "eps_cagr_3y": round(eps_cagr, 2) if eps_cagr is not None else None,
-            "latest_roe": round(latest_roe, 2) if latest_roe is not None else None,
             "eps_pass": bool(eps_pass),
-            "roe_pass": bool(roe_pass),
         }
 
     def _records(self, financial_data: dict[str, Any] | None, key: str) -> list[dict[str, Any]]:

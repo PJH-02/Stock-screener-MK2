@@ -37,7 +37,32 @@ class LeadershipAnalyzer:
             logger.debug(f"Error calculating RS rating for {ticker}: {exc}")
             return None
 
-    def check_l_criterion(self, ticker, rs_percentile):
+    def check_l_criterion(self, ticker, rs_percentile, ohlcv=None):
+        high_details = self._near_52w_high_details(ohlcv)
         if rs_percentile is None:
-            return False, {"reason": "RS percentile unavailable"}
-        return rs_percentile >= 80, {"rs_percentile": round(float(rs_percentile), 2)}
+            return False, {"reason": "RS percentile unavailable", **high_details}
+        rs_pass = rs_percentile >= 90
+        high_pass = bool(high_details.get("near_52w_high_pass"))
+        return bool(rs_pass and high_pass), {
+            "rs_percentile": round(float(rs_percentile), 2),
+            "rs_pass": bool(rs_pass),
+            **high_details,
+        }
+
+    def _near_52w_high_details(self, ohlcv):
+        if ohlcv is None or ohlcv.empty:
+            return {"near_52w_high_pass": False, "reason": "No OHLCV data available"}
+        if len(ohlcv) < 200:
+            return {"near_52w_high_pass": False, "reason": "Insufficient price history"}
+        recent = ohlcv.tail(252)
+        high_52w = float(recent["high"].max())
+        current_price = float(ohlcv["close"].iloc[-1])
+        if high_52w == 0:
+            return {"near_52w_high_pass": False, "reason": "Zero 52-week high"}
+        drawdown_from_high = ((high_52w - current_price) / high_52w) * 100
+        return {
+            "current_price": round(current_price, 4),
+            "52w_high": round(high_52w, 4),
+            "drawdown_from_52w_high": round(drawdown_from_high, 2),
+            "near_52w_high_pass": bool(drawdown_from_high <= 25),
+        }

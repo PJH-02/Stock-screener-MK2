@@ -36,12 +36,47 @@ def slice_price_history_as_of(
     return sliced
 
 
+def slice_institutional_flow_as_of(
+    institutional_flow: dict[str, list[dict[str, Any]]] | None,
+    as_of: str,
+    *,
+    lookback_bars: int = 126,
+) -> dict[str, list[dict[str, Any]]]:
+    if not institutional_flow:
+        return {}
+    sliced: dict[str, list[dict[str, Any]]] = {}
+    for ticker, rows in institutional_flow.items():
+        available = [dict(row) for row in rows if str(row.get("date") or "") <= as_of]
+        if available:
+            sliced[ticker] = available[-lookback_bars:]
+    return sliced
+
+
+def slice_index_history_as_of(
+    market_index_history: dict[str, pd.DataFrame] | None,
+    as_of: str,
+    *,
+    lookback_bars: int = 60,
+) -> dict[str, pd.DataFrame]:
+    if not market_index_history:
+        return {}
+    sliced: dict[str, pd.DataFrame] = {}
+    for market, df in market_index_history.items():
+        frame = df[df["date"].astype(str) <= as_of].copy()
+        if frame.empty:
+            continue
+        sliced[market] = frame.tail(lookback_bars).reset_index(drop=True)
+    return sliced
+
+
 def build_rankings_as_of(
     *,
     securities: list[TradingSecurity],
     price_history: dict[str, pd.DataFrame],
     financials: dict[str, dict[str, Any]],
     disclosures: list[dict[str, Any]],
+    institutional_flow: dict[str, list[dict[str, Any]]] | None = None,
+    market_index_history: dict[str, pd.DataFrame] | None = None,
     as_of: str,
     disclosure_lookback_days: int = 80,
     evaluator: CANSLIMTurtleEvaluator | None = None,
@@ -60,6 +95,8 @@ def build_rankings_as_of(
         price_as_of,
         financials_as_of,
         scores,
+        institutional_flow_by_ticker=slice_institutional_flow_as_of(institutional_flow, as_of),
+        market_index_history_by_market=slice_index_history_as_of(market_index_history, as_of),
     )
 
 
@@ -69,6 +106,8 @@ def build_point_in_time_candidate_schedule(
     price_history: dict[str, pd.DataFrame],
     financials: dict[str, dict[str, Any]],
     disclosures: list[dict[str, Any]],
+    institutional_flow: dict[str, list[dict[str, Any]]] | None = None,
+    market_index_history: dict[str, pd.DataFrame] | None = None,
     start: str,
     end: str,
     disclosure_lookback_days: int = 80,
@@ -85,6 +124,8 @@ def build_point_in_time_candidate_schedule(
             price_history=price_history,
             financials=financials,
             disclosures=disclosures,
+            institutional_flow=institutional_flow,
+            market_index_history=market_index_history,
             as_of=current_date,
             disclosure_lookback_days=disclosure_lookback_days,
             evaluator=evaluator,
@@ -92,4 +133,3 @@ def build_point_in_time_candidate_schedule(
         schedule[current_date] = evaluator.candidates(rankings)
         latest_rankings = rankings
     return schedule, latest_rankings
-

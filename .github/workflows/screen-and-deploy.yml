@@ -26,6 +26,41 @@ on:
         required: true
         default: false
         type: boolean
+      run_trading:
+        description: "Collect trading data and run 1-year KR backtest"
+        required: true
+        default: false
+        type: boolean
+      trading_market:
+        description: "Trading data market to collect"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - KR
+          - US
+      trading_start:
+        description: "Trading data collection start date"
+        required: false
+        default: "2021-01-01"
+        type: string
+      trading_end:
+        description: "Trading data collection end date, defaults to today when blank"
+        required: false
+        type: string
+      trading_limit:
+        description: "Optional trading data/backtest limit for smoke tests"
+        required: false
+        type: string
+      backtest_start:
+        description: "Backtest start date, defaults to backtest_end minus 365 days"
+        required: false
+        type: string
+      backtest_end:
+        description: "Backtest end date, defaults to trading_end"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -39,8 +74,12 @@ concurrency:
 jobs:
   screen:
     runs-on: ubuntu-latest
+    timeout-minutes: 360
     env:
       DART_API_KEY: ${{ secrets.DART_API_KEY }}
+      KIWOOM_APP_KEY: ${{ secrets.KIWOOM_APP_KEY }}
+      KIWOOM_SECRET_KEY: ${{ secrets.KIWOOM_SECRET_KEY }}
+      KIWOOM_ENV: ${{ vars.KIWOOM_ENV }}
       SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT }}
       REQUESTED_MARKET: ${{ github.event.inputs.market || '' }}
       REQUESTED_LIMIT: ${{ github.event.inputs.limit || '' }}
@@ -102,6 +141,64 @@ jobs:
           python src/main.py "${args[@]}"
         env:
           PYTHONPATH: ${{ github.workspace }}/src
+
+      - name: Resolve trading options
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_trading == 'true' }}
+        shell: bash
+        run: |
+          TRADING_MARKET="${{ github.event.inputs.trading_market }}"
+          TRADING_START="${{ github.event.inputs.trading_start }}"
+          TRADING_END="${{ github.event.inputs.trading_end }}"
+          TRADING_LIMIT="${{ github.event.inputs.trading_limit }}"
+          BACKTEST_START="${{ github.event.inputs.backtest_start }}"
+          BACKTEST_END="${{ github.event.inputs.backtest_end }}"
+
+          if [[ -z "$TRADING_MARKET" ]]; then TRADING_MARKET="all"; fi
+          if [[ -z "$TRADING_START" ]]; then TRADING_START="2021-01-01"; fi
+          if [[ -z "$TRADING_END" ]]; then
+            TRADING_END="$(python -c 'from datetime import date; print(date.today().isoformat())')"
+          fi
+          if [[ -z "$BACKTEST_END" ]]; then BACKTEST_END="$TRADING_END"; fi
+          if [[ -z "$BACKTEST_START" ]]; then
+            BACKTEST_START="$(python -c 'import sys; from datetime import date, timedelta; print((date.fromisoformat(sys.argv[1]) - timedelta(days=365)).isoformat())' "$BACKTEST_END")"
+          fi
+
+          echo "TRADING_MARKET=$TRADING_MARKET" >> "$GITHUB_ENV"
+          echo "TRADING_START=$TRADING_START" >> "$GITHUB_ENV"
+          echo "TRADING_END=$TRADING_END" >> "$GITHUB_ENV"
+          echo "BACKTEST_START=$BACKTEST_START" >> "$GITHUB_ENV"
+          echo "BACKTEST_END=$BACKTEST_END" >> "$GITHUB_ENV"
+          if [[ -n "$TRADING_LIMIT" ]]; then
+            echo "TRADING_LIMIT=$TRADING_LIMIT" >> "$GITHUB_ENV"
+          fi
+
+      - name: Collect trading data and run backtest
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_trading == 'true' }}
+        timeout-minutes: 340
+        shell: bash
+        run: |
+          collect_args=(--market "$TRADING_MARKET" --start "$TRADING_START" --end "$TRADING_END")
+          backtest_args=(--start "$BACKTEST_START" --end "$BACKTEST_END")
+          if [[ -n "${TRADING_LIMIT:-}" ]]; then
+            collect_args+=(--limit "$TRADING_LIMIT")
+            backtest_args+=(--limit "$TRADING_LIMIT")
+          fi
+
+          python -m trading.cli collect "${collect_args[@]}"
+          if [[ "$TRADING_MARKET" != "US" ]]; then
+            python -m trading.cli backtest "${backtest_args[@]}"
+          fi
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
+
+      - name: Upload trading results artifact
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && github.event.inputs.run_trading == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: trading-results
+          path: trading/results
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Build Pages artifact directory
         shell: bash

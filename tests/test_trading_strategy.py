@@ -4,8 +4,9 @@ import pandas as pd
 
 from trading.backtest import BacktestEngine, turtle_exit_level_on
 from trading.canslim_turtle import CANSLIMTurtleEvaluator
-from trading.data_collection.kr_dart import filter_disclosures_as_of, filter_financials_as_of
-from trading.kiwoom_client import normalize_daily_chart_response, normalize_universe_response
+from trading.data_collection.kr_daily import KRInstitutionalFlowCollector
+from trading.data_collection.kr_dart import DARTDisclosureClient, filter_disclosures_as_of, filter_financials_as_of
+from trading.kiwoom_client import TradingSecurity, normalize_daily_chart_response, normalize_institutional_flow_response, normalize_universe_response
 from trading.macro_dart_score import build_macro_dart_scores
 from trading.point_in_time import slice_price_history_as_of
 from trading.portfolio import Position, choose_winner, exit_reason, shares_for_value, target_weights
@@ -34,7 +35,7 @@ def sample_ohlcv(days=260, slope=1.0):
     high = close + 0.5
     low = close - 0.5
     volume = pd.Series([1000] * days)
-    volume.iloc[-5:] = 3000
+    volume.iloc[-1] = 3000
     high.iloc[-1] = high.iloc[:-1].max() + 1
     return pd.DataFrame(
         {
@@ -76,6 +77,38 @@ def test_kiwoom_daily_chart_normalizer_accepts_fixture_shape():
 
     assert list(df.columns) == ["date", "open", "high", "low", "close", "volume"]
     assert df.iloc[-1]["close"] == 1250
+
+
+def test_kiwoom_institutional_flow_normalizer_accepts_signed_values():
+    df = normalize_institutional_flow_response(
+        {
+            "stk_invsr_orgn": [
+                {"dt": "20250102", "orgn": "-1,000", "frgnr_invsr": "+500", "ind_invsr": "500"},
+                {"dt": "20250103", "orgn": "2,000", "frgnr_invsr": "-700", "ind_invsr": "(1,300)"},
+            ]
+        }
+    )
+
+    assert list(df.columns) == ["date", "institutional_net_buy", "foreigner_net_buy", "individual_net_buy", "close", "volume"]
+    assert df.iloc[0]["institutional_net_buy"] == -1000
+    assert df.iloc[-1]["individual_net_buy"] == -1300
+
+
+def test_institutional_flow_collector_records_per_ticker_errors(tmp_path):
+    class FailingClient:
+        def load_institutional_flow(self, ticker, *, end_date, bars):
+            raise RuntimeError("empty flow")
+
+    collector = KRInstitutionalFlowCollector(client=FailingClient(), cache_dir=tmp_path)
+    flows = collector.load_flows(
+        [TradingSecurity(ticker="000020", name="Test", market="KOSPI")],
+        start_date="2025-01-01",
+        end_date="2025-02-01",
+        bars=20,
+    )
+
+    assert flows == {"000020": []}
+    assert collector.errors[0]["ticker"] == "000020"
 
 
 def test_macro_dart_scores_rank_full_universe_and_share_common_disclosures():
@@ -155,6 +188,64 @@ def test_point_in_time_filters_financials_disclosures_and_prices():
     assert sliced["005930"]["date"].max() == as_of
 
 
+def test_dart_disclosure_client_fetches_all_pages_by_default(tmp_path, monkeypatch):
+    calls = []
+
+    class Response:
+        def __init__(self, page):
+            self.page = page
+
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {
+                "status": "000",
+                "total_page": 3,
+                "list": [
+                    {
+                        "stock_code": f"00593{self.page}",
+                        "rcept_dt": f"2025010{self.page}",
+                        "report_nm": f"report {self.page}",
+                        "rcept_no": f"r{self.page}",
+                    }
+                ],
+            }
+
+    def fake_get(url, params, timeout):
+        calls.append(params["page_no"])
+        return Response(params["page_no"])
+
+    monkeypatch.setattr("trading.data_collection.kr_dart.requests.get", fake_get)
+    monkeypatch.setattr("trading.data_collection.kr_dart.time.sleep", lambda _: None)
+
+    client = DARTDisclosureClient(api_key="key", cache_dir=tmp_path)
+    rows = client.fetch_disclosures(start_date="2025-01-01", end_date="2025-01-10", as_of="2025-01-10")
+
+    assert calls == [1, 2, 3]
+    assert len(rows) == 3
+    assert (tmp_path / "dart_disclosures_2025-01-01_2025-01-10_all.json").exists()
+
+
+def test_dart_disclosure_client_rejects_partial_page_cap(tmp_path, monkeypatch):
+    class Response:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"status": "000", "total_page": 3, "list": []}
+
+    monkeypatch.setattr("trading.data_collection.kr_dart.requests.get", lambda *args, **kwargs: Response())
+
+    client = DARTDisclosureClient(api_key="key", cache_dir=tmp_path, max_pages=1)
+    try:
+        client.fetch_disclosures(start_date="2025-01-01", end_date="2025-01-10", as_of="2025-01-10")
+    except RuntimeError as exc:
+        assert "would be partial" in str(exc)
+    else:
+        raise AssertionError("partial disclosure fetch should fail by default")
+
+
 def test_allocation_cap_shares_and_exit_rules():
     candidates = [{"ticker": f"T{i}", "macro_rank": i} for i in range(1, 4)]
 
@@ -195,7 +286,19 @@ def test_canslim_turtle_filters_candidates_after_macro_ranking():
     price_history = {security.ticker: sample_ohlcv(slope=index) for index, security in enumerate(securities, start=1)}
     financials = {security.common_ticker or security.ticker: sample_financials() for security in securities}
 
-    rows = CANSLIMTurtleEvaluator().evaluate_universe(securities, price_history, financials, scores)
+    institutional_flow = {
+        security.ticker: [{"institutional_net_buy": -100}] * 63 + [{"institutional_net_buy": 200}] * 63
+        for security in securities
+    }
+    market_indexes = {"KOSPI": sample_ohlcv(days=60, slope=2.0)}
+    rows = CANSLIMTurtleEvaluator().evaluate_universe(
+        securities,
+        price_history,
+        financials,
+        scores,
+        institutional_flow_by_ticker=institutional_flow,
+        market_index_history_by_market=market_indexes,
+    )
     candidates = CANSLIMTurtleEvaluator().candidates(rows)
 
     assert candidates

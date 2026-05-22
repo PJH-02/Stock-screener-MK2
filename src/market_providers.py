@@ -276,15 +276,22 @@ def get_yahoo_chart_ohlcv(symbol: str, days: int) -> pd.DataFrame:
 
 
 def get_naver_kr_ohlcv(ticker: str, days: int) -> pd.DataFrame:
-    ticker = str(ticker).zfill(6)
-    cached = read_dataframe_cache(cache_path("prices", "naver_kr", f"{ticker}_{days}.json"), PRICE_CACHE_TTL_HOURS)
+    return get_naver_chart_ohlcv(str(ticker).zfill(6), days, "prices", "naver_kr")
+
+
+def get_naver_index_ohlcv(symbol: str, days: int) -> pd.DataFrame:
+    return get_naver_chart_ohlcv(symbol.upper(), days, "prices", "naver_index")
+
+
+def get_naver_chart_ohlcv(symbol: str, days: int, *cache_parts: str) -> pd.DataFrame:
+    cached = read_dataframe_cache(cache_path(*cache_parts, f"{symbol}_{days}.json"), PRICE_CACHE_TTL_HOURS)
     if cached is not None:
         return cached
 
     response = request_get_with_retry(
         "https://fchart.stock.naver.com/sise.nhn",
         params={
-            "symbol": ticker,
+            "symbol": symbol,
             "timeframe": "day",
             "count": max(days, 1),
             "requestType": "0",
@@ -294,7 +301,7 @@ def get_naver_kr_ohlcv(ticker: str, days: int) -> pd.DataFrame:
         pacer=NAVER_PACER,
     )
     df = parse_naver_kr_chart(response.content)
-    write_dataframe_cache(cache_path("prices", "naver_kr", f"{ticker}_{days}.json"), df)
+    write_dataframe_cache(cache_path(*cache_parts, f"{symbol}_{days}.json"), df)
     return df
 
 
@@ -337,6 +344,12 @@ class MarketProvider:
 
     def get_financials(self, security: Security) -> dict[str, Any]:
         raise NotImplementedError
+
+    def get_institutional_flow(self, security: Security, days: int = 126) -> list[dict[str, Any]]:
+        return []
+
+    def get_market_index_ohlcv(self, security: Security, days: int = 60) -> pd.DataFrame:
+        return pd.DataFrame(columns=["date", "open", "high", "low", "close", "volume", "currency"])
 
     def _cache_file(self, name: str) -> Path:
         return CACHE_DIR / f"{self.market.lower()}_{name}.json"
@@ -407,6 +420,7 @@ class KRProvider(MarketProvider):
 
     def __init__(self) -> None:
         super().__init__()
+        self.kospi_tickers: set[str] = set()
         self.dart_api_key = os.environ.get("DART_API_KEY")
         self.dart = None
         if self.dart_api_key and OpenDartReader is not None:
@@ -421,6 +435,7 @@ class KRProvider(MarketProvider):
         live: list[Security] = []
         try:
             live = self._fetch_naver_kospi200_universe()
+            self.kospi_tickers = {security.ticker for security in live}
         except Exception as exc:
             self.alerts.append(f"KR: failed to fetch Naver KOSPI200 universe: {exc}")
 
@@ -440,6 +455,15 @@ class KRProvider(MarketProvider):
             df,
             {"Date": "date", "Open": "open", "High": "high", "Low": "low", "Close": "close", "Volume": "volume"},
             security.currency or "KRW",
+        )
+
+    def get_market_index_ohlcv(self, security: Security, days: int = 60) -> pd.DataFrame:
+        symbol = "KOSPI" if security.ticker in self.kospi_tickers else "KOSDAQ"
+        df = get_naver_index_ohlcv(symbol, days)
+        return normalize_ohlcv(
+            df,
+            {"Date": "date", "Open": "open", "High": "high", "Low": "low", "Close": "close", "Volume": "volume"},
+            "KRW",
         )
 
     def get_financials(self, security: Security) -> dict[str, Any]:

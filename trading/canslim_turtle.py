@@ -12,7 +12,7 @@ SRC_DIR = Path(__file__).resolve().parents[1] / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from canslim import EarningsAnalyzer, LeadershipAnalyzer, NewnessAnalyzer, SupplyAnalyzer  # noqa: E402
+from canslim import EarningsAnalyzer, InstitutionalAnalyzer, LeadershipAnalyzer, MarketAnalyzer, SupplyAnalyzer  # noqa: E402
 from turtle import TurtleSignalGenerator  # noqa: E402
 
 from trading.kiwoom_client import TradingSecurity
@@ -20,13 +20,14 @@ from trading.macro_dart_score import MacroDartScore
 
 
 class CANSLIMTurtleEvaluator:
-    required_criteria = ("C", "A", "N", "S", "L")
+    required_criteria = ("C", "A", "S", "L", "I", "M")
 
     def __init__(self) -> None:
         self.earnings = EarningsAnalyzer()
-        self.newness = NewnessAnalyzer()
         self.supply = SupplyAnalyzer()
         self.leadership = LeadershipAnalyzer()
+        self.institutional = InstitutionalAnalyzer()
+        self.market = MarketAnalyzer()
         self.turtle = TurtleSignalGenerator()
 
     def evaluate_universe(
@@ -35,6 +36,8 @@ class CANSLIMTurtleEvaluator:
         price_history: dict[str, pd.DataFrame],
         financials_by_common_ticker: dict[str, dict[str, Any]],
         macro_scores: list[MacroDartScore],
+        institutional_flow_by_ticker: dict[str, list[dict[str, Any]]] | None = None,
+        market_index_history_by_market: dict[str, pd.DataFrame] | None = None,
     ) -> list[dict[str, Any]]:
         rs_values: dict[str, float | None] = {}
         for security in securities:
@@ -49,7 +52,17 @@ class CANSLIMTurtleEvaluator:
             ohlcv = price_history.get(security.ticker)
             financials = financials_by_common_ticker.get(security.common_ticker or security.ticker, {})
             score = score_by_ticker.get(security.ticker)
-            criteria = self._evaluate_criteria(security, ohlcv, financials, available_rs, rs_values.get(security.ticker))
+            institutional_flow = (institutional_flow_by_ticker or {}).get(security.ticker)
+            index_ohlcv = (market_index_history_by_market or {}).get(security.market)
+            criteria = self._evaluate_criteria(
+                security,
+                ohlcv,
+                financials,
+                available_rs,
+                rs_values.get(security.ticker),
+                institutional_flow,
+                index_ohlcv,
+            )
             signals = self.turtle.generate_signals(security.ticker, ohlcv)
             buy_signals = [signal for signal in signals if signal in {"S1_Buy", "S2_Buy"}]
             turtle_system = "S2" if "S2_Buy" in buy_signals else "S1" if "S1_Buy" in buy_signals else None
@@ -94,21 +107,25 @@ class CANSLIMTurtleEvaluator:
         financials: dict[str, Any],
         rs_values: list[float],
         rs_value: float | None,
+        institutional_flow: list[dict[str, Any]] | None,
+        index_ohlcv: pd.DataFrame | None,
     ) -> dict[str, Any]:
         c_pass, c_details = self.earnings.check_c_criterion(security.ticker, financials)
         a_pass, a_details = self.earnings.check_a_criterion(security.ticker, financials)
-        n_pass, n_details = self.newness.check_n_criterion(security.ticker, ohlcv)
         s_pass, s_details = self.supply.check_s_criterion(security.ticker, ohlcv)
         percentile = self._percentile_rank(rs_values, rs_value)
-        l_pass, l_details = self.leadership.check_l_criterion(security.ticker, percentile)
+        l_pass, l_details = self.leadership.check_l_criterion(security.ticker, percentile, ohlcv)
         if rs_value is not None:
             l_details["rs_value"] = round(float(rs_value), 2)
+        i_pass, i_details = self.institutional.check_i_criterion(security.ticker, institutional_flow)
+        m_pass, m_details = self.market.check_m_criterion(security.ticker, index_ohlcv)
         return {
             "C": {"pass": c_pass, "details": c_details},
             "A": {"pass": a_pass, "details": a_details},
-            "N": {"pass": n_pass, "details": n_details},
             "S": {"pass": s_pass, "details": s_details},
             "L": {"pass": l_pass, "details": l_details},
+            "I": {"pass": i_pass, "details": i_details},
+            "M": {"pass": m_pass, "details": m_details},
         }
 
     @staticmethod

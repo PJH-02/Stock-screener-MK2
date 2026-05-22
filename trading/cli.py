@@ -18,9 +18,15 @@ if str(SRC_DIR) not in sys.path:
 from trading.backtest import BacktestEngine, compare_and_write  # noqa: E402
 from trading.canslim_turtle import CANSLIMTurtleEvaluator  # noqa: E402
 from trading.config import DATA_CACHE_DIR, DEFAULT_CONFIG, RESULTS_DIR  # noqa: E402
-from trading.data_collection.kr_daily import KRDailyPriceCollector  # noqa: E402
+from trading.data_collection.kr_daily import (
+    KRDailyPriceCollector,
+    KRIndexPriceCollector,
+    KRInstitutionalFlowCollector,
+    bars_for_date_range,
+)  # noqa: E402
 from trading.data_collection.kr_dart import DARTDisclosureClient, KRFinancialCollector  # noqa: E402
-from trading.data_collection.us_daily import USDailyPriceCollector  # noqa: E402
+from trading.data_collection.macro_snapshots import MacroSnapshotCollector  # noqa: E402
+from trading.data_collection.us_daily import USDailyPriceCollector, USIndexPriceCollector, days_for_date_range  # noqa: E402
 from trading.data_collection.us_sec import USSECFinancialCollector  # noqa: E402
 from trading.kiwoom_client import TradingSecurity  # noqa: E402
 from trading.macro_dart_score import build_macro_dart_scores  # noqa: E402
@@ -34,10 +40,28 @@ def load_strategy_inputs(
     *,
     start: str | None = None,
     price_bars: int = DEFAULT_CONFIG.price_lookback_bars,
-) -> tuple[list[TradingSecurity], dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
+) -> tuple[
+    list[TradingSecurity],
+    dict[str, Any],
+    dict[str, Any],
+    list[dict[str, Any]],
+    dict[str, list[dict[str, Any]]],
+    dict[str, Any],
+]:
     price_collector = KRDailyPriceCollector()
-    securities, price_history = price_collector.load_inputs(end_date=as_of, limit=limit, bars=price_bars)
+    securities, price_history = price_collector.load_inputs(end_date=as_of, start_date=start, limit=limit, bars=price_bars)
     financials = KRFinancialCollector().load_financials(securities)
+    institutional_flow = KRInstitutionalFlowCollector().load_flows(
+        securities,
+        start_date=start,
+        end_date=as_of,
+        bars=bars_for_date_range(start, as_of, minimum=126),
+    )
+    market_index_history = KRIndexPriceCollector().load_index_history(
+        start_date=start,
+        end_date=as_of,
+        bars=bars_for_date_range(start, as_of, minimum=60),
+    )
     if start is not None:
         disclosure_start = (date.fromisoformat(start) - timedelta(days=80)).isoformat()
         disclosures = DARTDisclosureClient().fetch_disclosures_range(
@@ -48,7 +72,7 @@ def load_strategy_inputs(
     else:
         disclosure_start = (date.fromisoformat(as_of) - timedelta(days=80)).isoformat()
         disclosures = DARTDisclosureClient().fetch_disclosures(start_date=disclosure_start, end_date=as_of, as_of=as_of)
-    return securities, price_history, financials, disclosures
+    return securities, price_history, financials, disclosures, institutional_flow, market_index_history
 
 
 def build_rankings_from_inputs(
@@ -56,13 +80,22 @@ def build_rankings_from_inputs(
     price_history: dict[str, Any],
     financials: dict[str, Any],
     disclosures: list[dict[str, Any]],
+    institutional_flow: dict[str, list[dict[str, Any]]] | None = None,
+    market_index_history: dict[str, Any] | None = None,
     *,
     as_of: str | None = None,
     write_latest: bool = True,
 ) -> list[dict[str, Any]]:
     scores = build_macro_dart_scores(securities, disclosures, as_of=as_of)
     evaluator = CANSLIMTurtleEvaluator()
-    rankings = evaluator.evaluate_universe(securities, price_history, financials, scores)
+    rankings = evaluator.evaluate_universe(
+        securities,
+        price_history,
+        financials,
+        scores,
+        institutional_flow_by_ticker=institutional_flow,
+        market_index_history_by_market=market_index_history,
+    )
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     if write_latest:
         (RESULTS_DIR / "latest_rankings.json").write_text(json.dumps(rankings, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -70,12 +103,14 @@ def build_rankings_from_inputs(
 
 
 def build_rankings(as_of: str, limit: int | None = None) -> list[dict[str, Any]]:
-    securities, price_history, financials, disclosures = load_strategy_inputs(as_of, limit)
+    securities, price_history, financials, disclosures, institutional_flow, market_index_history = load_strategy_inputs(as_of, limit)
     rankings = build_rankings_as_of(
         securities=securities,
         price_history=price_history,
         financials=financials,
         disclosures=disclosures,
+        institutional_flow=institutional_flow,
+        market_index_history=market_index_history,
         as_of=as_of,
     )
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -112,17 +147,19 @@ def command_orders(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def command_backtest(args: argparse.Namespace) -> dict[str, Any]:
-    securities, price_history, financials, disclosures = load_strategy_inputs(
+    securities, price_history, financials, disclosures, institutional_flow, market_index_history = load_strategy_inputs(
         args.end,
         args.limit,
         start=args.start,
-        price_bars=DEFAULT_CONFIG.price_lookback_bars + DEFAULT_CONFIG.backtest_days,
+        price_bars=bars_for_date_range(args.start, args.end, minimum=DEFAULT_CONFIG.price_lookback_bars + DEFAULT_CONFIG.backtest_days),
     )
     schedule, latest_rankings = build_point_in_time_candidate_schedule(
         securities=securities,
         price_history=price_history,
         financials=financials,
         disclosures=disclosures,
+        institutional_flow=institutional_flow,
+        market_index_history=market_index_history,
         start=args.start,
         end=args.end,
     )
@@ -159,14 +196,33 @@ def command_collect(args: argparse.Namespace) -> dict[str, Any]:
         "cache_dir": str(DATA_CACHE_DIR),
     }
     if market in {"KR", "ALL"}:
+        kr_price_bars = bars_for_date_range(
+            args.start,
+            args.end,
+            minimum=args.price_bars or DEFAULT_CONFIG.price_lookback_bars,
+        )
         price_collector = KRDailyPriceCollector()
         securities, price_history = price_collector.load_inputs(
             end_date=args.end,
+            start_date=args.start,
             limit=args.limit,
-            bars=args.price_bars,
+            bars=kr_price_bars,
         )
         financials = KRFinancialCollector().load_financials(securities)
-        disclosure_start = (date.fromisoformat(args.start) - timedelta(days=80)).isoformat()
+        flow_collector = KRInstitutionalFlowCollector()
+        institutional_flow = flow_collector.load_flows(
+            securities,
+            start_date=args.start,
+            end_date=args.end,
+            bars=bars_for_date_range(args.start, args.end, minimum=126),
+        )
+        index_collector = KRIndexPriceCollector()
+        index_history = index_collector.load_index_history(
+            start_date=args.start,
+            end_date=args.end,
+            bars=bars_for_date_range(args.start, args.end, minimum=60),
+        )
+        disclosure_start = args.start
         disclosures = DARTDisclosureClient().fetch_disclosures_range(
             start_date=disclosure_start,
             end_date=args.end,
@@ -176,18 +232,41 @@ def command_collect(args: argparse.Namespace) -> dict[str, Any]:
             "securities": len(securities),
             "prices": len(price_history),
             "financials": len(financials),
+            "institutional_flows": len(institutional_flow),
+            "institutional_flow_error_count": len(flow_collector.errors),
+            "institutional_flow_error_samples": flow_collector.errors[:20],
+            "indexes": {name: len(frame) for name, frame in index_history.items()},
+            "index_error_count": len(index_collector.errors),
+            "index_error_samples": index_collector.errors[:10],
             "disclosures": len(disclosures),
         }
     if market in {"US", "ALL"}:
+        us_price_days = days_for_date_range(
+            args.start,
+            args.end,
+            minimum=args.price_bars or DEFAULT_CONFIG.price_lookback_bars,
+        )
         price_collector = USDailyPriceCollector()
         securities = price_collector.load_universe(limit=args.limit)
-        price_history = price_collector.load_price_history(securities, bars=args.price_bars)
+        price_history = price_collector.load_price_history(
+            securities,
+            start_date=args.start,
+            end_date=args.end,
+            bars=us_price_days,
+        )
         financials = USSECFinancialCollector().load_financials(securities)
+        index_history = USIndexPriceCollector().load_index_history(
+            start_date=args.start,
+            end_date=args.end,
+            bars=us_price_days,
+        )
         result["markets"]["US"] = {
             "securities": len(securities),
             "prices": len(price_history),
             "financials": len(financials),
+            "indexes": {name: len(frame) for name, frame in index_history.items()},
         }
+    result["macro_snapshots"] = MacroSnapshotCollector().collect(start_date=args.start, end_date=args.end)
     return result
 
 
@@ -216,10 +295,10 @@ def parse_args() -> argparse.Namespace:
 
     collect = subparsers.add_parser("collect")
     collect.add_argument("--market", choices=["KR", "US", "all"], default="all")
-    collect.add_argument("--start", required=True)
-    collect.add_argument("--end", required=True)
+    collect.add_argument("--start", default="2021-01-01")
+    collect.add_argument("--end", default=date.today().isoformat())
     collect.add_argument("--limit", type=int, default=None)
-    collect.add_argument("--price-bars", type=int, default=DEFAULT_CONFIG.price_lookback_bars + DEFAULT_CONFIG.backtest_days)
+    collect.add_argument("--price-bars", type=int, default=None)
     return parser.parse_args()
 
 
