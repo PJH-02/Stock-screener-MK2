@@ -477,7 +477,7 @@
   },
   {
     "market": "US",
-    "ticker": "BK",
+    "ticker": "BNY",
     "name": "BNY Mellon",
     "sector": "Financials",
     "currency": "USD"
@@ -927,7 +927,7 @@
     "market": "US",
     "ticker": "CSGP",
     "name": "CoStar Group",
-    "sector": null,
+    "sector": "Real Estate",
     "currency": "USD"
   },
   {
@@ -2068,7 +2068,7 @@
     "market": "US",
     "ticker": "LITE",
     "name": "Lumentum",
-    "sector": "Information Technology",
+    "sector": null,
     "currency": "USD"
   },
   {

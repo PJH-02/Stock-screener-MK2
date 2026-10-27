@@ -1,0 +1,32 @@
+{
+  "model": "cim_turtle",
+  "start": "2009-12-30",
+  "end": "2026-06-01",
+  "evaluation_start": "2013-01-02",
+  "metrics": {
+    "total_return": -0.1545052397591995,
+    "cagr": -0.0124375465048433,
+    "sharpe": -0.3159778838303759,
+    "mdd": -0.15961212985046325,
+    "turnover": 15.151919577932128,
+    "fees": 227278.7936689819,
+    "trade_count": 154,
+    "final_equity": 84549476.02408005,
+    "model": "cim_turtle",
+    "evaluation_start": "2013-01-02"
+  },
+  "config": {
+    "initial_equity": 100000000.0,
+    "commission_rate": 0.00015,
+    "slippage_bps": 0.0,
+    "risk_per_trade": 0.01,
+    "max_total_open_risk": 0.1,
+    "position_value_cap": 0.2,
+    "adv_cap": 0.1,
+    "max_positions": 10,
+    "warmup_years": 3,
+    "stop_loss_pct": -0.08,
+    "drawdown_kill_switch": -0.15,
+    "resume_drawdown": -0.1
+  }
+}

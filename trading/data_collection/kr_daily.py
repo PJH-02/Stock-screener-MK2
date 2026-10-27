@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -18,7 +20,8 @@ def bars_for_date_range(start_date: str | None, end_date: str, *, minimum: int =
     if start_date is None:
         return minimum
     calendar_days = max((date.fromisoformat(end_date) - date.fromisoformat(start_date)).days + 1, 1)
-    return max(minimum, int(calendar_days * 1.6))
+    trading_days_with_buffer = int(calendar_days * 5 / 7) + 80
+    return max(minimum, trading_days_with_buffer)
 
 
 class KRDailyPriceCollector:
@@ -28,9 +31,15 @@ class KRDailyPriceCollector:
         self.client = client or KiwoomRESTClient()
         self.cache_dir = cache_dir
         self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.errors: list[dict[str, Any]] = []
 
     def load_universe(self, *, limit: int | None = None) -> list[TradingSecurity]:
-        securities = self.client.load_universe()
+        try:
+            securities = self.client.load_universe()
+        except Exception:
+            securities = self._read_universe_cache()
+            if not securities:
+                raise
         return securities[:limit] if limit else securities
 
     def load_price_history(
@@ -43,14 +52,43 @@ class KRDailyPriceCollector:
     ) -> dict[str, pd.DataFrame]:
         history: dict[str, pd.DataFrame] = {}
         requested_bars = bars_for_date_range(start_date, end_date, minimum=bars)
+        pending: list[TradingSecurity] = []
         for security in securities:
             cached = self._read_price_cache(security.ticker, start_date=start_date, end_date=end_date, bars=requested_bars)
             if cached is not None:
                 history[security.ticker] = cached
                 continue
-            df = self.client.load_daily_ohlcv(security.ticker, end_date=end_date, bars=requested_bars)
-            self._write_price_cache(security.ticker, df)
-            history[security.ticker] = self._slice_by_date(df, start_date=start_date, end_date=end_date)
+            if _env_flag("TRADING_SKIP_KIWOOM_LIVE"):
+                self.errors.append({"ticker": security.ticker, "name": security.name, "error": "missing_price_cache_live_kiwoom_skipped"})
+                continue
+            pending.append(security)
+
+        workers = _worker_count("TRADING_KIWOOM_PRICE_WORKERS")
+        if workers <= 1:
+            for security in pending:
+                try:
+                    df = self.client.load_daily_ohlcv(security.ticker, end_date=end_date, bars=requested_bars)
+                except Exception as exc:
+                    self.errors.append({"ticker": security.ticker, "name": security.name, "error": str(exc)})
+                    continue
+                self._write_price_cache(security.ticker, df)
+                history[security.ticker] = self._slice_by_date(df, start_date=start_date, end_date=end_date)
+            return history
+
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = {
+                executor.submit(_fetch_price_history, security, end_date, requested_bars): security
+                for security in pending
+            }
+            for future in as_completed(futures):
+                security = futures[future]
+                try:
+                    df = future.result()
+                except Exception as exc:
+                    self.errors.append({"ticker": security.ticker, "name": security.name, "error": str(exc)})
+                    continue
+                self._write_price_cache(security.ticker, df)
+                history[security.ticker] = self._slice_by_date(df, start_date=start_date, end_date=end_date)
         return history
 
     def load_inputs(
@@ -80,10 +118,7 @@ class KRDailyPriceCollector:
                 return None
             df = df.sort_values("date").reset_index(drop=True)
             max_date = str(df["date"].max())
-            min_date = str(df["date"].min())
             if max_date < end_date:
-                return None
-            if start_date is not None and min_date > start_date:
                 return None
             return self._slice_by_date(df, start_date=start_date, end_date=end_date).tail(bars).reset_index(drop=True)
         except Exception:
@@ -91,10 +126,11 @@ class KRDailyPriceCollector:
 
     def _write_price_cache(self, ticker: str, df: pd.DataFrame) -> None:
         path = self._price_cache_path(ticker)
+        merged = self._merge_cached_frame(path, df)
         payload = {
             "created_at": time.time(),
             "ticker": ticker,
-            "data": json.loads(df.to_json(orient="records", date_format="iso", force_ascii=False)),
+            "data": json.loads(merged.to_json(orient="records", date_format="iso", force_ascii=False)),
         }
         path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
@@ -107,6 +143,17 @@ class KRDailyPriceCollector:
         )
 
     @staticmethod
+    def _read_universe_cache() -> list[TradingSecurity]:
+        path = DATA_CACHE_DIR / "kr_universe.json"
+        if not path.exists():
+            return []
+        try:
+            rows = json.loads(path.read_text(encoding="utf-8"))
+            return [TradingSecurity(**row) for row in rows if isinstance(row, dict)]
+        except Exception:
+            return []
+
+    @staticmethod
     def _slice_by_date(df: pd.DataFrame, *, start_date: str | None, end_date: str) -> pd.DataFrame:
         frame = df.copy()
         if "date" not in frame.columns:
@@ -117,6 +164,29 @@ class KRDailyPriceCollector:
             dates = frame["date"].astype(str)
         frame = frame[dates <= end_date]
         return frame.sort_values("date").reset_index(drop=True)
+
+    @staticmethod
+    def _merge_cached_frame(path: Path, incoming: pd.DataFrame) -> pd.DataFrame:
+        frames: list[pd.DataFrame] = []
+        if path.exists():
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                rows = payload.get("data", payload if isinstance(payload, list) else [])
+                cached = pd.DataFrame(rows)
+                if not cached.empty:
+                    frames.append(cached)
+            except Exception:
+                pass
+        if incoming is not None and not incoming.empty:
+            frames.append(incoming.copy())
+        if not frames:
+            return pd.DataFrame()
+        merged = pd.concat(frames, ignore_index=True, sort=False)
+        if "date" not in merged.columns:
+            return merged.reset_index(drop=True)
+        merged["date"] = pd.to_datetime(merged["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        merged = merged.dropna(subset=["date"]).drop_duplicates(subset=["date"], keep="last")
+        return merged.sort_values("date").reset_index(drop=True)
 
 
 class KRInstitutionalFlowCollector:
@@ -138,18 +208,53 @@ class KRInstitutionalFlowCollector:
     ) -> dict[str, list[dict[str, Any]]]:
         flows: dict[str, list[dict[str, Any]]] = {}
         requested_bars = bars_for_date_range(start_date, end_date, minimum=bars)
+        pending: list[TradingSecurity] = []
         for security in securities:
             cached = self._read_flow_cache(security.ticker, start_date=start_date, end_date=end_date, bars=requested_bars)
-            if cached is None:
+            if cached is not None:
+                flows[security.ticker] = json.loads(cached.to_json(orient="records", date_format="iso", force_ascii=False))
+                continue
+            if _env_flag("TRADING_SKIP_KIWOOM_LIVE"):
+                self.errors.append({"ticker": security.ticker, "name": security.name, "error": "missing_flow_cache_live_kiwoom_skipped"})
+                flows[security.ticker] = []
+                continue
+            pending.append(security)
+
+        workers = _worker_count("TRADING_KIWOOM_FLOW_WORKERS")
+        if workers <= 1:
+            for security in pending:
                 try:
-                    df = self.client.load_institutional_flow(security.ticker, end_date=end_date, bars=requested_bars)
+                    df = self.client.load_institutional_flow(
+                        security.ticker,
+                        start_date=start_date,
+                        end_date=end_date,
+                        bars=requested_bars,
+                    )
                 except Exception as exc:
                     self.errors.append({"ticker": security.ticker, "name": security.name, "error": str(exc)})
                     flows[security.ticker] = []
                     continue
                 self._write_flow_cache(security.ticker, df)
                 cached = self._slice_by_date(df, start_date=start_date, end_date=end_date)
-            flows[security.ticker] = json.loads(cached.to_json(orient="records", date_format="iso", force_ascii=False))
+                flows[security.ticker] = json.loads(cached.to_json(orient="records", date_format="iso", force_ascii=False))
+            return flows
+
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = {
+                executor.submit(_fetch_institutional_flow, security, start_date, end_date, requested_bars): security
+                for security in pending
+            }
+            for future in as_completed(futures):
+                security = futures[future]
+                try:
+                    df = future.result()
+                except Exception as exc:
+                    self.errors.append({"ticker": security.ticker, "name": security.name, "error": str(exc)})
+                    flows[security.ticker] = []
+                    continue
+                self._write_flow_cache(security.ticker, df)
+                cached = self._slice_by_date(df, start_date=start_date, end_date=end_date)
+                flows[security.ticker] = json.loads(cached.to_json(orient="records", date_format="iso", force_ascii=False))
         return flows
 
     def _flow_cache_path(self, ticker: str) -> Path:
@@ -168,19 +273,19 @@ class KRInstitutionalFlowCollector:
             df = df.sort_values("date").reset_index(drop=True)
             if str(df["date"].max()) < end_date:
                 return None
-            if start_date is not None and str(df["date"].min()) > start_date:
-                return None
             return self._slice_by_date(df, start_date=start_date, end_date=end_date).tail(bars).reset_index(drop=True)
         except Exception:
             return None
 
     def _write_flow_cache(self, ticker: str, df: pd.DataFrame) -> None:
+        path = self._flow_cache_path(ticker)
+        merged = KRDailyPriceCollector._merge_cached_frame(path, df)
         payload = {
             "created_at": time.time(),
             "ticker": ticker,
-            "data": json.loads(df.to_json(orient="records", date_format="iso", force_ascii=False)),
+            "data": json.loads(merged.to_json(orient="records", date_format="iso", force_ascii=False)),
         }
-        self._flow_cache_path(ticker).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     @staticmethod
     def _slice_by_date(df: pd.DataFrame, *, start_date: str | None, end_date: str) -> pd.DataFrame:
@@ -242,9 +347,40 @@ class KRIndexPriceCollector:
             return None
 
     def _write_index_cache(self, market: str, df: pd.DataFrame) -> None:
+        path = self._index_cache_path(market)
+        merged = KRDailyPriceCollector._merge_cached_frame(path, df)
         payload = {
             "created_at": time.time(),
             "market": market,
-            "data": json.loads(df.to_json(orient="records", date_format="iso", force_ascii=False)),
+            "data": json.loads(merged.to_json(orient="records", date_format="iso", force_ascii=False)),
         }
-        self._index_cache_path(market).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _worker_count(env_name: str) -> int:
+    try:
+        return max(int(os.getenv(env_name, "1")), 1)
+    except ValueError:
+        return 1
+
+
+def _env_flag(name: str) -> bool:
+    return str(os.getenv(name) or "").strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def _fetch_price_history(security: TradingSecurity, end_date: str, bars: int) -> pd.DataFrame:
+    return KiwoomRESTClient().load_daily_ohlcv(security.ticker, end_date=end_date, bars=bars)
+
+
+def _fetch_institutional_flow(
+    security: TradingSecurity,
+    start_date: str | None,
+    end_date: str,
+    bars: int,
+) -> pd.DataFrame:
+    return KiwoomRESTClient().load_institutional_flow(
+        security.ticker,
+        start_date=start_date,
+        end_date=end_date,
+        bars=bars,
+    )

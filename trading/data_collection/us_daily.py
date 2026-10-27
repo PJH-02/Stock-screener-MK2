@@ -106,25 +106,27 @@ class USIndexPriceCollector:
             df = df.sort_values("date").reset_index(drop=True)
             if end_date is not None and str(df["date"].max()) < end_date:
                 return None
-            if start_date is not None and str(df["date"].min()) > start_date:
-                return None
             return slice_by_date(df, start_date=start_date, end_date=end_date).tail(bars).reset_index(drop=True)
         except Exception:
             return None
 
     def _write_index_cache(self, name: str, df: pd.DataFrame) -> None:
+        path = self._index_cache_path(name)
+        merged = merge_cached_frame(path, df)
         payload = {
             "created_at": time.time(),
             "name": name,
-            "data": json.loads(df.to_json(orient="records", date_format="iso", force_ascii=False)),
+            "data": json.loads(merged.to_json(orient="records", date_format="iso", force_ascii=False)),
         }
-        self._index_cache_path(name).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def days_for_date_range(start_date: str | None, end_date: str | None, *, minimum: int) -> int:
     if start_date is None or end_date is None:
         return minimum
-    calendar_days = max((date.fromisoformat(end_date) - date.fromisoformat(start_date)).days + 10, 1)
+    # Yahoo chart calls in market_providers are relative to "now", so historical
+    # windows must request enough calendar days from today back to start_date.
+    calendar_days = max((date.today() - date.fromisoformat(start_date)).days + 10, 1)
     return max(minimum, calendar_days)
 
 
@@ -139,3 +141,26 @@ def slice_by_date(df: pd.DataFrame, *, start_date: str | None, end_date: str | N
     if end_date is not None:
         frame = frame[frame["date"].astype(str) <= end_date]
     return frame.sort_values("date").reset_index(drop=True)
+
+
+def merge_cached_frame(path: Path, incoming: pd.DataFrame) -> pd.DataFrame:
+    frames: list[pd.DataFrame] = []
+    if path.exists():
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            rows = payload.get("data", payload if isinstance(payload, list) else [])
+            cached = pd.DataFrame(rows)
+            if not cached.empty:
+                frames.append(cached)
+        except Exception:
+            pass
+    if incoming is not None and not incoming.empty:
+        frames.append(incoming.copy())
+    if not frames:
+        return pd.DataFrame()
+    merged = pd.concat(frames, ignore_index=True, sort=False)
+    if "date" not in merged.columns:
+        return merged.reset_index(drop=True)
+    merged["date"] = pd.to_datetime(merged["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    merged = merged.dropna(subset=["date"]).drop_duplicates(subset=["date"], keep="last")
+    return merged.sort_values("date").reset_index(drop=True)

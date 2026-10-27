@@ -1,0 +1,13 @@
+{
+  "industry_csv": "/home/runner/work/macro/macro/src/data/snapshots/2026-04-03-pre_open-20260403T085504+0900/industry_scores.csv",
+  "industry_parquet": "/home/runner/work/macro/macro/src/data/snapshots/2026-04-03-pre_open-20260403T085504+0900/industry_scores.parquet",
+  "published_at": "2026-04-03T08:55:04+09:00",
+  "run_id": "2026-04-03-pre_open-20260403T085504+0900",
+  "run_type": "pre_open",
+  "screened_stock_csv": "/home/runner/work/macro/macro/src/data/snapshots/2026-04-03-pre_open-20260403T085504+0900/screened_stock_list.csv",
+  "screened_stocks_by_industry_json": "/home/runner/work/macro/macro/src/data/snapshots/2026-04-03-pre_open-20260403T085504+0900/screened_stocks_by_industry.json",
+  "screened_stocks_by_score_json": "/home/runner/work/macro/macro/src/data/snapshots/2026-04-03-pre_open-20260403T085504+0900/screened_stocks_by_score.json",
+  "snapshot_json": "/home/runner/work/macro/macro/src/data/snapshots/2026-04-03-pre_open-20260403T085504+0900/snapshot.json",
+  "status": "published",
+  "stock_parquet": "/home/runner/work/macro/macro/src/data/snapshots/2026-04-03-pre_open-20260403T085504+0900/stock_scores.parquet"
+}

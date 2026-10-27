@@ -12,7 +12,7 @@ import os
 import re
 import time
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -253,6 +253,7 @@ def normalize_institutional_flow_response(payload: Mapping[str, Any] | list[Any]
                 "institution_net_buy",
                 "organ_pure_buy_quantity",
                 "organPureBuyQuant",
+                "orgn_daly_nettrde_qty",
                 "orgn",
                 "orgn_netbuy",
                 "institution",
@@ -265,6 +266,7 @@ def normalize_institutional_flow_response(payload: Mapping[str, Any] | list[Any]
                 "foreigner_net_buy",
                 "foreigner_pure_buy_quantity",
                 "foreignerPureBuyQuant",
+                "for_daly_nettrde_qty",
                 "frgnr_invsr",
                 "foreign",
             )
@@ -279,7 +281,7 @@ def normalize_institutional_flow_response(payload: Mapping[str, Any] | list[Any]
                 "individual",
             )
         )
-        close = parse_number(first_value(item, "close", "closePrice", "cur_prc", "close_price"))
+        close = parse_number(first_value(item, "close", "closePrice", "cur_prc", "close_pric", "close_price"))
         volume = parse_number(first_value(item, "volume", "accumulatedTradingVolume", "acc_trde_qty", "trde_qty"))
         if date is None or institutional is None:
             continue
@@ -328,6 +330,8 @@ class KiwoomRESTClient:
         self.cache_dir = cache_dir
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.session = requests.Session()
+        self._last_request_at = 0.0
+        self.min_interval_seconds = float(os.getenv("KIWOOM_MIN_INTERVAL_SECONDS", "0.75"))
 
     @property
     def base_url(self) -> str:
@@ -342,7 +346,17 @@ class KiwoomRESTClient:
             return cached
         if not self.app_key or not self.secret_key:
             raise RuntimeError("KIWOOM_APP_KEY and KIWOOM_SECRET_KEY are required for Kiwoom REST calls.")
-        payload = self._request_token_payload()
+        try:
+            payload = self._request_token_payload()
+        except ValueError as exc:
+            if not self._env_explicit and self.env == "prod":
+                self.env = "mock"
+                cached = self._read_cached_token()
+                if cached:
+                    return cached
+                payload = self._request_token_payload()
+            else:
+                raise RuntimeError(f"Kiwoom token request returned a non-JSON response: {exc}") from exc
         if int(payload.get("return_code") or 0) != 0:
             message = str(payload.get("return_msg") or "")
             if not self._env_explicit and self.env == "prod" and "투자구분" in message:
@@ -367,6 +381,9 @@ class KiwoomRESTClient:
             timeout=self.timeout,
         )
         response.raise_for_status()
+        content_type = str(response.headers.get("content-type") or "")
+        if "json" not in content_type.lower():
+            raise ValueError(f"{self.base_url}/oauth2/token returned {content_type or 'unknown content-type'}")
         return response.json()
 
     def _read_cached_token(self) -> str | None:
@@ -402,6 +419,14 @@ class KiwoomRESTClient:
                     "next-key": next_key,
                 },
             )
+            content_type = str(response.headers.get("content-type") or "")
+            if "json" not in content_type.lower():
+                title = _html_title(response.text)
+                raise RuntimeError(
+                    "Kiwoom API returned a non-JSON response "
+                    f"({content_type or 'unknown content-type'}"
+                    f"{', title=' + title if title else ''})."
+                )
             payload = response.json()
             pages.append(payload)
             next_key = response.headers.get("next-key", "") or str(payload.get("next-key") or "")
@@ -412,25 +437,47 @@ class KiwoomRESTClient:
 
     def _post_with_retry(self, path: str, body: Mapping[str, Any], headers: Mapping[str, str]) -> requests.Response:
         last_error: Exception | None = None
-        for attempt in range(3):
+        max_attempts = max(int(os.getenv("KIWOOM_MAX_RETRIES", "8")), 1)
+        base_sleep = max(float(os.getenv("KIWOOM_RETRY_BASE_SECONDS", "2.0")), 0.1)
+        for attempt in range(max_attempts):
             try:
+                self._pace_request()
                 response = self.session.post(
                     f"{self.base_url}{path}",
                     json=dict(body),
                     headers=dict(headers),
                     timeout=self.timeout,
                 )
-                if response.status_code in RETRY_STATUS_CODES and attempt < 2:
-                    time.sleep(2**attempt)
+                if response.status_code in RETRY_STATUS_CODES and attempt < max_attempts - 1:
+                    time.sleep(self._retry_sleep_seconds(response, attempt, base_sleep))
                     continue
                 response.raise_for_status()
                 return response
             except requests.RequestException as exc:
                 last_error = exc
-                if attempt == 2:
+                if attempt == max_attempts - 1:
                     raise
-                time.sleep(2**attempt)
+                retry_after = None
+                if getattr(exc, "response", None) is not None:
+                    retry_after = self._retry_sleep_seconds(exc.response, attempt, base_sleep)
+                time.sleep(retry_after if retry_after is not None else min(base_sleep * (2**attempt), 60.0))
         raise RuntimeError(f"Kiwoom request failed: {last_error}")
+
+    def _pace_request(self) -> None:
+        elapsed = time.monotonic() - self._last_request_at
+        if elapsed < self.min_interval_seconds:
+            time.sleep(self.min_interval_seconds - elapsed)
+        self._last_request_at = time.monotonic()
+
+    @staticmethod
+    def _retry_sleep_seconds(response: requests.Response, attempt: int, base_sleep: float) -> float:
+        retry_after = response.headers.get("Retry-After")
+        if retry_after:
+            try:
+                return min(max(float(retry_after), base_sleep), 120.0)
+            except ValueError:
+                pass
+        return min(base_sleep * (2**attempt), 120.0)
 
     def load_universe(self) -> list[TradingSecurity]:
         api_id = os.getenv("KIWOOM_UNIVERSE_API_ID", "ka10099")
@@ -450,26 +497,38 @@ class KiwoomRESTClient:
             api_id,
             path,
             {"stk_cd": ticker, "base_dt": end_date.replace("-", ""), "upd_stkpc_tp": "1"},
-            max_pages=20,
+            max_pages=self._page_limit_for_bars("KIWOOM_DAILY_CHART_MAX_PAGES", bars),
         )
         df = normalize_daily_chart_response(pages)
         if df.empty:
             raise RuntimeError(f"Kiwoom daily chart response contained no OHLCV rows for {ticker}.")
         return df.tail(bars).reset_index(drop=True)
 
-    def load_institutional_flow(self, ticker: str, *, end_date: str, bars: int) -> pd.DataFrame:
-        api_id = os.getenv("KIWOOM_INSTITUTION_FLOW_API_ID", "ka10059")
-        path = os.getenv("KIWOOM_INSTITUTION_FLOW_PATH", "/api/dostk/chart")
-        body = {
-            "dt": end_date.replace("-", ""),
-            "base_dt": end_date.replace("-", ""),
-            "stk_cd": ticker,
-            "amt_qty_tp": os.getenv("KIWOOM_INSTITUTION_FLOW_AMOUNT_QTY_TYPE", "2"),
-            "trde_tp": os.getenv("KIWOOM_INSTITUTION_FLOW_TRADE_TYPE", "0"),
-            "unit_tp": os.getenv("KIWOOM_INSTITUTION_FLOW_UNIT_TYPE", "1"),
-        }
+    def load_institutional_flow(self, ticker: str, *, end_date: str, bars: int, start_date: str | None = None) -> pd.DataFrame:
+        api_id = os.getenv("KIWOOM_INSTITUTION_FLOW_API_ID", "ka10045")
+        path = os.getenv("KIWOOM_INSTITUTION_FLOW_PATH", "/api/dostk/mrkcond")
+        if api_id == "ka10045":
+            request_start = start_date or (date.fromisoformat(end_date) - timedelta(days=int(bars * 7 / 5) + 30)).isoformat()
+            body = {
+                "stk_cd": ticker,
+                "strt_dt": request_start.replace("-", ""),
+                "end_dt": end_date.replace("-", ""),
+                "orgn_prsm_unp_tp": os.getenv("KIWOOM_INSTITUTION_ORG_PRICE_TYPE", "1"),
+                "for_prsm_unp_tp": os.getenv("KIWOOM_INSTITUTION_FOREIGNER_PRICE_TYPE", "1"),
+            }
+            default_max_pages = str(self._page_limit_for_bars("KIWOOM_INSTITUTION_FLOW_MAX_PAGES", bars, minimum=20))
+        else:
+            body = {
+                "dt": end_date.replace("-", ""),
+                "base_dt": end_date.replace("-", ""),
+                "stk_cd": ticker,
+                "amt_qty_tp": os.getenv("KIWOOM_INSTITUTION_FLOW_AMOUNT_QTY_TYPE", "2"),
+                "trde_tp": os.getenv("KIWOOM_INSTITUTION_FLOW_TRADE_TYPE", "0"),
+                "unit_tp": os.getenv("KIWOOM_INSTITUTION_FLOW_UNIT_TYPE", "1"),
+            }
+            default_max_pages = "80"
         body.update(_json_env_mapping("KIWOOM_INSTITUTION_FLOW_EXTRA_PARAMS"))
-        pages = self.post_api(api_id, path, body, max_pages=int(os.getenv("KIWOOM_INSTITUTION_FLOW_MAX_PAGES", "80")))
+        pages = self.post_api(api_id, path, body, max_pages=int(os.getenv("KIWOOM_INSTITUTION_FLOW_MAX_PAGES", default_max_pages)))
         df = normalize_institutional_flow_response(pages)
         if df.empty:
             raise RuntimeError(f"Kiwoom institutional flow response contained no rows for {ticker}.")
@@ -488,11 +547,18 @@ class KiwoomRESTClient:
             "dt": end_date.replace("-", ""),
         }
         body.update(_json_env_mapping("KIWOOM_INDEX_DAILY_EXTRA_PARAMS"))
-        pages = self.post_api(api_id, path, body, max_pages=int(os.getenv("KIWOOM_INDEX_DAILY_MAX_PAGES", "20")))
+        pages = self.post_api(api_id, path, body, max_pages=self._page_limit_for_bars("KIWOOM_INDEX_DAILY_MAX_PAGES", bars))
         df = normalize_daily_chart_response(pages)
         if df.empty:
             raise RuntimeError(f"Kiwoom index daily chart response contained no OHLCV rows for {normalized_market}.")
         return df.tail(bars).reset_index(drop=True)
+
+    @staticmethod
+    def _page_limit_for_bars(env_name: str, bars: int, *, minimum: int = 5, page_size_hint: int = 90) -> int:
+        configured = os.getenv(env_name)
+        if configured:
+            return max(int(configured), 1)
+        return max(minimum, math.ceil(max(bars, 1) / page_size_hint) + 2)
 
 
 def _json_env_mapping(name: str) -> dict[str, Any]:
@@ -503,3 +569,15 @@ def _json_env_mapping(name: str) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError(f"{name} must be a JSON object.")
     return dict(payload)
+
+
+def _html_title(text: str) -> str:
+    match = re.search(r"<title[^>]*>(.*?)</title>", text or "", flags=re.IGNORECASE | re.DOTALL)
+    if not match:
+        return ""
+    title = re.sub(r"\s+", " ", match.group(1)).strip()
+    try:
+        title = title.encode("latin1").decode("utf-8")
+    except Exception:
+        pass
+    return title

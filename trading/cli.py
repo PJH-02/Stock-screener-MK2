@@ -50,7 +50,7 @@ def load_strategy_inputs(
 ]:
     price_collector = KRDailyPriceCollector()
     securities, price_history = price_collector.load_inputs(end_date=as_of, start_date=start, limit=limit, bars=price_bars)
-    financials = KRFinancialCollector().load_financials(securities)
+    financials = KRFinancialCollector().load_financials(securities, start_date=start, end_date=as_of)
     institutional_flow = KRInstitutionalFlowCollector().load_flows(
         securities,
         start_date=start,
@@ -208,7 +208,7 @@ def command_collect(args: argparse.Namespace) -> dict[str, Any]:
             limit=args.limit,
             bars=kr_price_bars,
         )
-        financials = KRFinancialCollector().load_financials(securities)
+        financials = KRFinancialCollector().load_financials(securities, start_date=args.start, end_date=args.end)
         flow_collector = KRInstitutionalFlowCollector()
         institutional_flow = flow_collector.load_flows(
             securities,
@@ -231,6 +231,8 @@ def command_collect(args: argparse.Namespace) -> dict[str, Any]:
         result["markets"]["KR"] = {
             "securities": len(securities),
             "prices": len(price_history),
+            "price_error_count": len(price_collector.errors),
+            "price_error_samples": price_collector.errors[:20],
             "financials": len(financials),
             "institutional_flows": len(institutional_flow),
             "institutional_flow_error_count": len(flow_collector.errors),

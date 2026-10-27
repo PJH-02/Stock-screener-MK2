@@ -1,0 +1,33 @@
+{
+  "model": "model_e",
+  "start": "2009-12-30",
+  "end": "2026-06-01",
+  "evaluation_start": "2013-01-02",
+  "metrics": {
+    "total_return": 4.461937009257651,
+    "cagr": 0.1349712663285092,
+    "sharpe": 0.9645667468151605,
+    "mdd": -0.27663066515680035,
+    "turnover": 673.5117035309592,
+    "fees": 10102675.552964386,
+    "trade_count": 314507,
+    "final_equity": 546193700.9257652,
+    "model": "model_e",
+    "evaluation_start": "2013-01-02"
+  },
+  "config": {
+    "initial_equity": 100000000.0,
+    "commission_rate": 0.00015,
+    "slippage_bps": 0.0,
+    "risk_per_trade": 0.01,
+    "max_total_open_risk": 0.1,
+    "adv_cap": 0.1,
+    "max_positions": 10,
+    "warmup_years": 3,
+    "stop_loss_pct": -0.08,
+    "high52_position_cap": 0.15,
+    "high52_take_profit_fraction": 0.5,
+    "drawdown_kill_switch": -0.15,
+    "resume_drawdown": -0.1
+  }
+}

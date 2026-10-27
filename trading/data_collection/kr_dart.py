@@ -6,6 +6,7 @@ import json
 import os
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any, Mapping
@@ -49,24 +50,15 @@ class DARTDisclosureClient:
         cache_path = self.cache_dir / f"dart_disclosures_{start_date}_{end_date}_{cache_suffix}.json"
         if cache_path.exists() and (self.max_pages is None or self.allow_partial):
             return json.loads(cache_path.read_text(encoding="utf-8"))
+        if _env_flag("TRADING_DART_OFFLINE_CACHE_ONLY") or _env_flag("TRADING_DART_DISCLOSURE_OFFLINE_CACHE_ONLY"):
+            return []
 
         as_of_date = date.fromisoformat(as_of)
         rows: list[dict[str, Any]] = []
         page_no = 1
         total_pages = 1
         while page_no <= total_pages:
-            response = requests.get(
-                "https://opendart.fss.or.kr/api/list.json",
-                params={
-                    "crtfc_key": self.api_key,
-                    "bgn_de": start_date.replace("-", ""),
-                    "end_de": end_date.replace("-", ""),
-                    "last_reprt_at": "N",
-                    "page_no": page_no,
-                    "page_count": 100,
-                },
-                timeout=30,
-            )
+            response = self._get_list_page(start_date=start_date, end_date=end_date, page_no=page_no)
             response.raise_for_status()
             payload = response.json()
             status = str(payload.get("status") or "000")
@@ -109,8 +101,35 @@ class DARTDisclosureClient:
         cache_path.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
         return rows
 
+    def _get_list_page(self, *, start_date: str, end_date: str, page_no: int) -> requests.Response:
+        last_error: Exception | None = None
+        for attempt in range(int(os.getenv("TRADING_DART_DISCLOSURE_RETRIES", "4"))):
+            try:
+                return requests.get(
+                    "https://opendart.fss.or.kr/api/list.json",
+                    params={
+                        "crtfc_key": self.api_key,
+                        "bgn_de": start_date.replace("-", ""),
+                        "end_de": end_date.replace("-", ""),
+                        "last_reprt_at": "N",
+                        "page_no": page_no,
+                        "page_count": 100,
+                    },
+                    timeout=30,
+                )
+            except requests.RequestException as exc:
+                last_error = exc
+                if attempt >= int(os.getenv("TRADING_DART_DISCLOSURE_RETRIES", "4")) - 1:
+                    raise
+                time.sleep(min(2 ** attempt, 20))
+        if last_error is not None:
+            raise last_error
+        raise RuntimeError("DART disclosure request failed.")
+
     def fetch_disclosures_range(self, *, start_date: str, end_date: str, as_of: str, chunk_days: int = 80) -> list[dict[str, Any]]:
         """Fetch a range by chunking around OpenDART's whole-market period limit."""
+        if _env_flag("TRADING_DART_OFFLINE_CACHE_ONLY") or _env_flag("TRADING_DART_DISCLOSURE_OFFLINE_CACHE_ONLY"):
+            return self._fetch_disclosures_range_from_cache(start_date=start_date, end_date=end_date, as_of=as_of)
         start = date.fromisoformat(start_date)
         end = date.fromisoformat(end_date)
         rows: list[dict[str, Any]] = []
@@ -137,20 +156,88 @@ class DARTDisclosureClient:
             deduped[key] = row
         return list(deduped.values())
 
+    def _fetch_disclosures_range_from_cache(self, *, start_date: str, end_date: str, as_of: str) -> list[dict[str, Any]]:
+        start = date.fromisoformat(start_date)
+        end = date.fromisoformat(end_date)
+        as_of_date = date.fromisoformat(as_of)
+        rows: list[dict[str, Any]] = []
+        for cache_path in sorted(self.cache_dir.glob("dart_disclosures_*_all.json")):
+            for row in json.loads(cache_path.read_text(encoding="utf-8")):
+                accepted = _parse_disclosure_date(str(row.get("accepted_at") or row.get("rcept_dt") or ""))
+                if accepted is None or accepted < start or accepted > end or accepted > as_of_date:
+                    continue
+                rows.append(
+                    {
+                        **dict(row),
+                        "accepted_at": accepted.isoformat(),
+                        "trading_days_elapsed": max((as_of_date - accepted).days, 0),
+                    }
+                )
+        deduped: dict[tuple[str, str, str, str], dict[str, Any]] = {}
+        for row in rows:
+            key = (
+                str(row.get("rcept_no") or ""),
+                str(row.get("stock_code") or ""),
+                str(row.get("accepted_at") or ""),
+                str(row.get("title") or ""),
+            )
+            deduped[key] = row
+        return list(deduped.values())
+
 
 class KRFinancialCollector:
     """Collect normalized DART financial statements for a Korean universe."""
 
-    def __init__(self, provider: KRProvider | None = None) -> None:
+    def __init__(self, provider: KRProvider | None = None, *, start_year: int | None = None, end_year: int | None = None) -> None:
         self.provider = provider or KRProvider()
+        self.start_year = start_year
+        self.end_year = end_year
 
-    def load_financials(self, securities: list[TradingSecurity]) -> dict[str, dict[str, Any]]:
+    def load_financials(
+        self,
+        securities: list[TradingSecurity],
+        *,
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> dict[str, dict[str, Any]]:
+        start_year = self.start_year if self.start_year is not None else (date.fromisoformat(start_date).year if start_date else None)
+        end_year = self.end_year if self.end_year is not None else (date.fromisoformat(end_date).year if end_date else None)
         financials: dict[str, dict[str, Any]] = {}
+        common_tickers = []
+        seen: set[str] = set()
         for security in securities:
-            common_ticker = security.common_ticker or security.ticker
-            if common_ticker in financials:
+            common_ticker = str(security.common_ticker or security.ticker)
+            if common_ticker in seen:
                 continue
-            financials[common_ticker] = self.provider.get_financials(type("SecurityLike", (), {"ticker": common_ticker})())
+            seen.add(common_ticker)
+            common_tickers.append(common_ticker)
+
+        workers = _worker_count("TRADING_DART_FINANCIAL_WORKERS")
+        if workers <= 1:
+            for common_ticker in common_tickers:
+                financials[common_ticker] = self.provider.get_financials(
+                    type("SecurityLike", (), {"ticker": common_ticker})(),
+                    start_year=start_year,
+                    end_year=end_year,
+                )
+            return financials
+
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = {
+                executor.submit(_fetch_financials, common_ticker, start_year, end_year): common_ticker
+                for common_ticker in common_tickers
+            }
+            for future in as_completed(futures):
+                common_ticker = futures[future]
+                try:
+                    financials[common_ticker] = future.result()
+                except Exception as exc:
+                    financials[common_ticker] = {
+                        "source": "DART",
+                        "annual": [],
+                        "quarterly": [],
+                        "alerts": [f"DART financial fetch failed: {exc}"],
+                    }
         return financials
 
 
@@ -251,3 +338,18 @@ def _optional_positive_int(value: str | None) -> int | None:
 
 def _env_flag(name: str) -> bool:
     return str(os.getenv(name) or "").strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def _worker_count(env_name: str) -> int:
+    try:
+        return max(int(os.getenv(env_name, "1")), 1)
+    except ValueError:
+        return 1
+
+
+def _fetch_financials(common_ticker: str, start_year: int | None, end_year: int | None) -> dict[str, Any]:
+    return KRProvider().get_financials(
+        type("SecurityLike", (), {"ticker": common_ticker})(),
+        start_year=start_year,
+        end_year=end_year,
+    )

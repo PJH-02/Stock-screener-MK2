@@ -9,6 +9,7 @@ import re
 import time
 import contextlib
 import html
+import threading
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -73,13 +74,15 @@ class RequestPacer:
     def __init__(self, min_interval_seconds: float) -> None:
         self.min_interval_seconds = min_interval_seconds
         self.last_request_at = 0.0
+        self._lock = threading.Lock()
 
     def wait(self) -> None:
-        elapsed = time.monotonic() - self.last_request_at
-        delay = self.min_interval_seconds - elapsed
-        if delay > 0:
-            time.sleep(delay)
-        self.last_request_at = time.monotonic()
+        with self._lock:
+            elapsed = time.monotonic() - self.last_request_at
+            delay = self.min_interval_seconds - elapsed
+            if delay > 0:
+                time.sleep(delay)
+            self.last_request_at = time.monotonic()
 
 
 YAHOO_PACER = RequestPacer(float(os.environ.get("SCREENER_YAHOO_MIN_INTERVAL_SECONDS", "0.2")))
@@ -466,27 +469,44 @@ class KRProvider(MarketProvider):
             "KRW",
         )
 
-    def get_financials(self, security: Security) -> dict[str, Any]:
+    def get_financials(
+        self,
+        security: Security,
+        *,
+        start_year: int | None = None,
+        end_year: int | None = None,
+    ) -> dict[str, Any]:
         financial_cache = cache_path("financials", "kr_dart", f"{security.ticker}.json")
+        current_year = datetime.now().year
+        start_year = int(start_year or os.environ.get("TRADING_FINANCIAL_START_YEAR") or current_year - 5)
+        end_year = int(end_year or os.environ.get("TRADING_FINANCIAL_END_YEAR") or current_year)
+        annual_end_year = min(end_year, current_year - 1)
         cached = read_json_cache(financial_cache, FINANCIAL_CACHE_TTL_HOURS)
-        if cached is not None:
+        if cached is not None and self._financial_cache_covers(cached, start_year, end_year):
             return cached
+        existing = cached if isinstance(cached, dict) else self._read_financial_cache_unchecked(financial_cache)
 
-        financials: dict[str, Any] = {"source": "DART", "annual": [], "quarterly": [], "alerts": []}
+        financials: dict[str, Any] = {
+            "source": "DART",
+            "coverage": {"start_year": start_year, "end_year": end_year, "annual_end_year": annual_end_year},
+            "frequency": {"annual": "FY", "quarterly": "Q1/Q2/Q3 filings when available"},
+            "annual": [],
+            "quarterly": [],
+            "alerts": [],
+        }
         if self.dart is None:
             financials["alerts"].append("DART reader unavailable.")
             return financials
 
-        current_year = datetime.now().year
         annual: list[dict[str, Any]] = []
         quarterly: list[dict[str, Any]] = []
 
-        for year in range(current_year - 5, current_year):
+        for year in range(start_year, annual_end_year + 1):
             df = self._fetch_dart_statement(security.ticker, year, "11011")
             if df is not None and not df.empty:
                 annual.append(self._parse_dart_report(df, year, "FY"))
 
-        for year in range(current_year - 2, current_year + 1):
+        for year in range(start_year, min(end_year, current_year) + 1):
             for report_code, quarter in self._quarter_report_codes_for_year(year).items():
                 df = self._fetch_dart_statement(security.ticker, year, report_code)
                 if df is not None and not df.empty:
@@ -498,9 +518,106 @@ class KRProvider(MarketProvider):
             financials["alerts"].append("No annual DART financial statements parsed.")
         if not financials["quarterly"]:
             financials["alerts"].append("No quarterly DART EPS records parsed.")
-        if financials["annual"] or financials["quarterly"]:
-            write_json_cache(financial_cache, financials)
+        if os.environ.get("TRADING_DART_OFFLINE_CACHE_ONLY"):
+            financials["alerts"].append("DART offline cache-only mode was enabled; missing statement cache entries were not fetched.")
+        if existing:
+            financials = self._merge_financial_cache(existing, financials, start_year=start_year, end_year=end_year)
+        write_json_cache(financial_cache, financials)
         return financials
+
+    @staticmethod
+    def _financial_cache_covers(cached: dict[str, Any], start_year: int, end_year: int) -> bool:
+        coverage = cached.get("coverage") or {}
+        try:
+            return int(coverage.get("start_year")) <= start_year and int(coverage.get("end_year")) >= end_year
+        except Exception:
+            return False
+
+    @staticmethod
+    def _read_financial_cache_unchecked(path: Path) -> dict[str, Any] | None:
+        if not path.exists():
+            return None
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            data = payload.get("data") if isinstance(payload, dict) else payload
+            return data if isinstance(data, dict) else None
+        except Exception:
+            return None
+
+    @classmethod
+    def _merge_financial_cache(
+        cls,
+        existing: dict[str, Any],
+        fresh: dict[str, Any],
+        *,
+        start_year: int,
+        end_year: int,
+    ) -> dict[str, Any]:
+        merged = dict(fresh)
+        merged["annual"] = cls._merge_financial_records(existing.get("annual", []), fresh.get("annual", []))
+        merged["quarterly"] = cls._merge_financial_records(existing.get("quarterly", []), fresh.get("quarterly", []))
+        alerts = [str(item) for item in existing.get("alerts", []) + fresh.get("alerts", []) if item]
+        if not os.environ.get("TRADING_DART_OFFLINE_CACHE_ONLY"):
+            alerts = [item for item in alerts if "offline cache-only" not in item]
+        merged["alerts"] = sorted(set(alerts))
+        existing_coverage = cls._derive_financial_coverage(existing)
+        merged["coverage"] = {
+            "start_year": min(existing_coverage.get("start_year", start_year), start_year),
+            "end_year": max(existing_coverage.get("end_year", end_year), end_year),
+            "annual_end_year": max(
+                existing_coverage.get("annual_end_year", min(end_year, datetime.now().year - 1)),
+                fresh.get("coverage", {}).get("annual_end_year", min(end_year, datetime.now().year - 1)),
+            ),
+        }
+        merged["frequency"] = fresh.get("frequency") or existing.get("frequency") or {
+            "annual": "FY",
+            "quarterly": "Q1/Q2/Q3 filings when available",
+        }
+        return merged
+
+    @staticmethod
+    def _merge_financial_records(existing: Any, fresh: Any) -> list[dict[str, Any]]:
+        by_key: dict[tuple[int, str], dict[str, Any]] = {}
+        for source in (existing or [], fresh or []):
+            for record in source if isinstance(source, list) else []:
+                if not isinstance(record, dict):
+                    continue
+                try:
+                    key = (int(record.get("year")), str(record.get("period") or ""))
+                except Exception:
+                    continue
+                by_key[key] = dict(record)
+        return [by_key[key] for key in sorted(by_key)]
+
+    @staticmethod
+    def _derive_financial_coverage(financials: dict[str, Any]) -> dict[str, int]:
+        coverage = financials.get("coverage") or {}
+        years: list[int] = []
+        annual_years: list[int] = []
+        for record in financials.get("annual", []) if isinstance(financials.get("annual"), list) else []:
+            try:
+                year = int(record.get("year"))
+            except Exception:
+                continue
+            years.append(year)
+            annual_years.append(year)
+        for record in financials.get("quarterly", []) if isinstance(financials.get("quarterly"), list) else []:
+            try:
+                years.append(int(record.get("year")))
+            except Exception:
+                continue
+        result: dict[str, int] = {}
+        for key in ("start_year", "end_year", "annual_end_year"):
+            try:
+                result[key] = int(coverage.get(key))
+            except Exception:
+                pass
+        if years:
+            result.setdefault("start_year", min(years))
+            result.setdefault("end_year", max(years))
+        if annual_years:
+            result.setdefault("annual_end_year", max(annual_years))
+        return result
 
     def _security_from_ticker(self, ticker: str) -> Security:
         seed = {security.ticker: security for security in self._seed_universe()}
@@ -546,16 +663,19 @@ class KRProvider(MarketProvider):
                 if not cached.empty:
                     return cached
                 continue
+            if os.environ.get("TRADING_DART_OFFLINE_CACHE_ONLY"):
+                continue
 
             try:
                 df = self._dart_finstate_all_with_retry(ticker, year, report_code, fs_div)
             except Exception as exc:
+                if "DART_LIMIT" in str(exc):
+                    raise
                 logger.debug("DART statement fetch failed for %s %s %s %s: %s", ticker, year, report_code, fs_div, exc)
                 df = None
             if isinstance(df, pd.DataFrame) and not df.empty:
                 write_dataframe_cache(statement_cache, df)
                 return df
-            write_dataframe_cache(statement_cache, pd.DataFrame())
         return None
 
     def _dart_finstate_all_with_retry(self, ticker: str, year: int, report_code: str, fs_div: str) -> pd.DataFrame | None:
@@ -563,10 +683,17 @@ class KRProvider(MarketProvider):
         for attempt in range(HTTP_MAX_ATTEMPTS):
             DART_PACER.wait()
             try:
-                with contextlib.redirect_stdout(StringIO()):
-                    return self.dart.finstate_all(ticker, year, reprt_code=report_code, fs_div=fs_div)
+                output = StringIO()
+                with contextlib.redirect_stdout(output):
+                    result = self.dart.finstate_all(ticker, year, reprt_code=report_code, fs_div=fs_div)
+                text = output.getvalue()
+                if "사용한도" in text or "'status': '020'" in text or '"status": "020"' in text:
+                    raise RuntimeError("DART_LIMIT: OpenDART usage limit exceeded.")
+                return result
             except Exception as exc:
                 last_error = exc
+                if "DART_LIMIT" in str(exc):
+                    raise
                 if attempt >= HTTP_MAX_ATTEMPTS - 1:
                     raise
                 time.sleep(min(HTTP_BACKOFF_SECONDS * (2**attempt) + random.uniform(0, 0.25), 30.0))

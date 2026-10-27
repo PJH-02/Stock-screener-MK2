@@ -1,0 +1,118 @@
+{
+  "created_at": 1779481265.4474788,
+  "ticker": "000040",
+  "data": [
+    {
+      "date": "2026-05-04",
+      "institutional_net_buy": -20.0,
+      "foreigner_net_buy": -41112.0,
+      "individual_net_buy": null,
+      "close": 436.0,
+      "volume": 138663.0
+    },
+    {
+      "date": "2026-05-06",
+      "institutional_net_buy": -4.0,
+      "foreigner_net_buy": 2980.0,
+      "individual_net_buy": null,
+      "close": 426.0,
+      "volume": 272426.0
+    },
+    {
+      "date": "2026-05-07",
+      "institutional_net_buy": -65.0,
+      "foreigner_net_buy": 3504.0,
+      "individual_net_buy": null,
+      "close": 424.0,
+      "volume": 268129.0
+    },
+    {
+      "date": "2026-05-08",
+      "institutional_net_buy": -6.0,
+      "foreigner_net_buy": 1088.0,
+      "individual_net_buy": null,
+      "close": 413.0,
+      "volume": 122079.0
+    },
+    {
+      "date": "2026-05-11",
+      "institutional_net_buy": 0.0,
+      "foreigner_net_buy": -1089.0,
+      "individual_net_buy": null,
+      "close": 390.0,
+      "volume": 452815.0
+    },
+    {
+      "date": "2026-05-12",
+      "institutional_net_buy": 1297.0,
+      "foreigner_net_buy": -12059.0,
+      "individual_net_buy": null,
+      "close": 403.0,
+      "volume": 561224.0
+    },
+    {
+      "date": "2026-05-13",
+      "institutional_net_buy": -6235.0,
+      "foreigner_net_buy": -16687.0,
+      "individual_net_buy": null,
+      "close": 393.0,
+      "volume": 238053.0
+    },
+    {
+      "date": "2026-05-14",
+      "institutional_net_buy": 1.0,
+      "foreigner_net_buy": 10100.0,
+      "individual_net_buy": null,
+      "close": 398.0,
+      "volume": 176979.0
+    },
+    {
+      "date": "2026-05-15",
+      "institutional_net_buy": 0.0,
+      "foreigner_net_buy": -18927.0,
+      "individual_net_buy": null,
+      "close": 378.0,
+      "volume": 382737.0
+    },
+    {
+      "date": "2026-05-18",
+      "institutional_net_buy": 0.0,
+      "foreigner_net_buy": 10516.0,
+      "individual_net_buy": null,
+      "close": 395.0,
+      "volume": 274116.0
+    },
+    {
+      "date": "2026-05-19",
+      "institutional_net_buy": 344.0,
+      "foreigner_net_buy": -31100.0,
+      "individual_net_buy": null,
+      "close": 371.0,
+      "volume": 175720.0
+    },
+    {
+      "date": "2026-05-20",
+      "institutional_net_buy": 0.0,
+      "foreigner_net_buy": 12283.0,
+      "individual_net_buy": null,
+      "close": 369.0,
+      "volume": 174796.0
+    },
+    {
+      "date": "2026-05-21",
+      "institutional_net_buy": 1009.0,
+      "foreigner_net_buy": 83563.0,
+      "individual_net_buy": null,
+      "close": 384.0,
+      "volume": 866115.0
+    },
+    {
+      "date": "2026-05-22",
+      "institutional_net_buy": -1353.0,
+      "foreigner_net_buy": -28165.0,
+      "individual_net_buy": null,
+      "close": 385.0,
+      "volume": 171980.0
+    }
+  ]
+}

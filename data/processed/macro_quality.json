@@ -1,0 +1,66 @@
+{
+  "series": {
+    "us_ipi": {
+      "source": "FRED",
+      "rows": 172,
+      "ok": true
+    },
+    "us_cpi": {
+      "source": "FRED",
+      "rows": 171,
+      "ok": true
+    },
+    "us_credit_spread": {
+      "source": "FRED",
+      "rows": 173,
+      "ok": true
+    },
+    "us_real_imports_goods": {
+      "source": "FRED",
+      "rows": 57,
+      "ok": true
+    },
+    "us_real_pce_goods": {
+      "source": "FRED",
+      "rows": 172,
+      "ok": true
+    },
+    "broad_usd": {
+      "source": "FRED",
+      "rows": 173,
+      "ok": true
+    },
+    "kr_ipi": {
+      "source": "ECOS",
+      "rows": 172,
+      "ok": true
+    },
+    "kr_cpi": {
+      "source": "ECOS",
+      "rows": 172,
+      "ok": true
+    },
+    "kr_exports_us": {
+      "source": "ECOS",
+      "rows": 172,
+      "ok": true
+    },
+    "usdkrw": {
+      "source": "ECOS",
+      "rows": 173,
+      "ok": true
+    },
+    "kr_rate_corp": {
+      "source": "ECOS",
+      "rows": 173,
+      "ok": true
+    },
+    "kr_rate_gov": {
+      "source": "ECOS",
+      "rows": 173,
+      "ok": true
+    }
+  },
+  "start": "2012-01-01",
+  "end": "2026-06-01"
+}
